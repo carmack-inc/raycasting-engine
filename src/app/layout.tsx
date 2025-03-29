@@ -1,32 +1,37 @@
-import { AppSidebar } from '@/components/app-sidebar'
-import { Button } from '@/components/ui/button'
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
-import { PlayIcon } from 'lucide-react'
-import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
-import "./globals.css"
-import { ThemeProvider } from '@/components/theme-provider'
-import { ModeToggle } from '@/components/mode-toggle'
+import { AppSidebar } from "@/components/app-sidebar";
+import { Button } from "@/components/ui/button";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { PlayIcon } from "lucide-react";
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ModeToggle } from "@/components/mode-toggle";
+import { GameDialog } from "@/components/game-dialog";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-})
+});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-})
+});
 
 export const metadata: Metadata = {
   title: "Raycasting Engine",
   description: "Simple raycasting engine",
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -47,20 +52,15 @@ export default function RootLayout({
                   <SidebarTrigger className="-ml-1" />
                   <div className="ml-auto flex items-center gap-x-2">
                     <ModeToggle />
-                    <Button size="sm" className="h-8">
-                      <PlayIcon className="size-4" />
-                      <span>Play</span>
-                    </Button>
+                    <GameDialog />
                   </div>
                 </div>
               </header>
-              <div className="px-4">
-                {children}
-              </div>
+              <div className="px-4">{children}</div>
             </SidebarInset>
           </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

@@ -24,7 +24,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton className="!p-1.5 group-data-[collapsible=icon]:!p-1.5" asChild>
               <Link href="/">
-                <JoystickIcon className="!w-5 !h-5 text-primary" />
+                <JoystickIcon className="!w-5 !h-5 text-primary dark:text-current" />
                 <span className="font-semibold text-base">Carmack Inc.</span>
               </Link>
             </SidebarMenuButton>

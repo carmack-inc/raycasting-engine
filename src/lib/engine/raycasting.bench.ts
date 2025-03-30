@@ -1,7 +1,5 @@
-import { bench } from "vitest";
-import { findRayMY, findPerpendicularDistance } from "./raycasting";
-import { Vec2 } from "./vec2";
-import { MAP } from "./settings";
+import { bench } from "vitest"
+import { findPerpendicularDistance, findRayMY } from "./raycasting"
 
 bench("my dda", () => {
   const x = Math.random() * 24;

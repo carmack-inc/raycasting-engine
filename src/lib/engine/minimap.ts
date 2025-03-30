@@ -29,15 +29,15 @@ function resizeRayOutOfMinimap(euclidianDist: Vec2) {
   if (Math.abs(delimitedRay.x) > maxRayDist) {
     const proportion = maxRayDist / Math.abs(delimitedRay.x);
 
-    (delimitedRay.x = delimitedRay.x > 0 ? maxRayDist : -maxRayDist),
-      (delimitedRay.y *= proportion);
+    delimitedRay.x = delimitedRay.x > 0 ? maxRayDist : -maxRayDist;
+    delimitedRay.y *= proportion;
   }
 
   if (Math.abs(delimitedRay.y) > maxRayDist) {
     const proportion = maxRayDist / Math.abs(delimitedRay.y);
 
-    (delimitedRay.x *= proportion),
-      (delimitedRay.y = delimitedRay.y > 0 ? maxRayDist : -maxRayDist);
+    delimitedRay.x *= proportion;
+    delimitedRay.y = delimitedRay.y > 0 ? maxRayDist : -maxRayDist;
   }
 
   return delimitedRay;

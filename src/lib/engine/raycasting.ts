@@ -76,7 +76,7 @@ export function hitFunction(mapPos: Vec2) {
 }
 
 export function findSidesSize(rayDir: Vec2, pos: Vec2, mapPos: Vec2): Vec2 {
-  let sideDist = { x: 0, y: 0 };
+  const sideDist = { x: 0, y: 0 };
 
   if (rayDir.x > 0) {
     sideDist.x = mapPos.x + 1 - pos.x;
@@ -111,7 +111,7 @@ export function calculteLineHeight(column: number, perpDist: number) {
 export function findRayMY({ initialPos, rayDirection }: DDAFunction) {
   const pos = { x: initialPos.x, y: initialPos.y };
   const mapPos = { x: Math.floor(pos.x), y: Math.floor(pos.y) };
-  let mapNextMove = {
+  const mapNextMove = {
     x: rayDirection.x > 0 ? 1 : -1,
     y: rayDirection.y > 0 ? 1 : -1,
   };
@@ -146,7 +146,7 @@ export function findRayMY({ initialPos, rayDirection }: DDAFunction) {
 }
 
 export function findSidesVector(rayDir: Vec2, pos: Vec2, mapPos: Vec2): Vec2 {
-  let sideDist = { x: 0, y: 0 };
+  const sideDist = { x: 0, y: 0 };
 
   if (rayDir.x > 0) {
     sideDist.x = mapPos.x + 1 - pos.x;

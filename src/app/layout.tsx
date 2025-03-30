@@ -1,17 +1,15 @@
-import { AppSidebar } from "@/components/app-sidebar";
-import { Button } from "@/components/ui/button";
+import { AppSidebar } from "@/components/app-sidebar"
+import { GameDialog } from "@/components/game-dialog"
+import { ModeToggle } from "@/components/mode-toggle"
+import { ThemeProvider } from "@/components/theme-provider"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { PlayIcon } from "lucide-react";
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { ModeToggle } from "@/components/mode-toggle";
-import { GameDialog } from "@/components/game-dialog";
+} from "@/components/ui/sidebar"
+import type { Metadata } from "next"
+import { Geist, Geist_Mono } from "next/font/google"
+import "./globals.css"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

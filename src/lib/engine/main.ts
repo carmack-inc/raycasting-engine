@@ -4,22 +4,22 @@ import {
   registerMouseInput,
   rotate,
   walk,
-} from "./input";
-import { drawMinimap } from "./minimap";
-import { paintLine } from "./paint";
-import { calculteLineHeight, findPerpendicularDistance } from "./raycasting";
-import { CANVAS_HEIGHT, CANVAS_WIDTH, colors, MAP, RGB } from "./settings";
-import { getPerpVec, lengthVector, Vec2 } from "./vec2";
+} from "./input"
+import { drawMinimap } from "./minimap"
+import { paintLine } from "./paint"
+import { calculteLineHeight, findPerpendicularDistance } from "./raycasting"
+import { CANVAS_WIDTH, colors, MAP } from "./settings"
+import { getPerpVec, Vec2 } from "./vec2"
 
 export const pos = { x: 3, y: 9 };
-export let direction = { x: 1, y: 0 };
+export const direction = { x: 1, y: 0 };
 
 const euclidianDistArray: Vec2[] = [];
 
 let currentTime = Date.now();
 let timeAccumulator = 0;
 const FPS = 60;
-let timePerFrame = 1000 / FPS;
+const timePerFrame = 1000 / FPS;
 
 export function start(canvas: HTMLCanvasElement) {
   // canvas.width = CANVAS_WIDTH;
@@ -34,11 +34,13 @@ export function start(canvas: HTMLCanvasElement) {
         await canvas.requestPointerLock({
           unadjustedMovement: true,
         });
-      } catch (error: any) {
-        if (error.name === "NotSupportedError") {
-          await canvas.requestPointerLock();
-        } else {
-          throw error;
+      } catch (error) {
+        if (error instanceof Error) {
+          if (error.name === "NotSupportedError") {
+            await canvas.requestPointerLock();
+          } else {
+            throw error;
+          }
         }
       }
     }

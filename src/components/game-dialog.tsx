@@ -1,19 +1,15 @@
 "use client";
 
-import { PlayIcon } from "lucide-react";
-import { Button } from "./ui/button";
+import { PlayIcon } from "lucide-react"
+import { Game } from "./game"
+import { Button } from "./ui/button"
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
-import { Input } from "./ui/input";
-import { Game } from "./game";
+  DialogTrigger
+} from "./ui/dialog"
 
 export function GameDialog() {
   return (

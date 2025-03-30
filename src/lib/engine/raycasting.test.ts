@@ -1,15 +1,14 @@
 import {
-  afterAll,
   beforeAll,
   beforeEach,
   describe,
   expect,
   it,
   test,
-  vi,
-} from "vitest";
-import { findSidesSize } from "./raycasting";
-import { Vec2 } from "./vec2";
+  vi
+} from "vitest"
+import { findSidesSize } from "./raycasting"
+import { Vec2 } from "./vec2"
 
 describe("Function: findPerpendicularDistance", () => {
   beforeEach(() => {

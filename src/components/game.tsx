@@ -17,5 +17,5 @@ export function Game() {
 
     start(canvas);
   }, []);
-  return <canvas width={640} height={480} ref={canvasRef} />;
+  return <canvas className="bg-black rounded-md" width={640} height={480} ref={canvasRef} />;
 }

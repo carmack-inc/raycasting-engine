@@ -1,72 +1,20 @@
 "use client"
 
 import {
-  CrownIcon,
-  FilesIcon,
-  GhostIcon,
-  HomeIcon,
-  JoystickIcon,
-  LandPlotIcon,
-  SwordsIcon
+  JoystickIcon
 } from "lucide-react"
-import * as React from "react"
+import type React from "react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar"
-
-// This is sample data.
-const data = {
-  user: {
-    name: "John Carmack",
-    email: "j.carmack@carmack.labs",
-    avatar: "/avatars/carmack.png",
-  },
-  navMain: [
-    {
-      title: "Home",
-      url: "/",
-      icon: HomeIcon,
-      isActive: true,
-    },
-    {
-      title: "Map",
-      url: "/map",
-      icon: LandPlotIcon,
-    },
-    {
-      title: "Assets",
-      url: "/assets",
-      icon: FilesIcon,
-    },
-  ],
-  projects: [
-    {
-      name: "Crown game",
-      url: "#",
-      icon: CrownIcon,
-    },
-    {
-      name: "Ghost game",
-      url: "#",
-      icon: GhostIcon,
-    },
-    {
-      name: "Sword game",
-      url: "#",
-      icon: SwordsIcon,
-    },
-  ],
-}
+import Link from 'next/link'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -74,24 +22,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton className="w-fit px-1.5 group-data-[state=collapsed]:!px-1.5">
-              <div className="flex aspect-square size-5 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                <JoystickIcon className="size-3" />
-              </div>
-              <span className="truncate font-semibold">
-                Carmack Inc.
-              </span>
+            <SidebarMenuButton className="!p-1.5 group-data-[collapsible=icon]:!p-1.5" asChild>
+              <Link href="/">
+                <JoystickIcon className="!w-5 !h-5 text-primary" />
+                <span className="font-semibold text-base">Carmack Inc.</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
     </Sidebar>
   )
 }

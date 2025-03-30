@@ -1,50 +1,49 @@
 "use client"
 
-import { type LucideIcon } from "lucide-react"
-
 import {
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar"
-import Link from 'next/link'
+import { TabsList, TabsTrigger } from '@radix-ui/react-tabs'
+import { FilesIcon, LandPlotIcon } from "lucide-react"
 import { usePathname } from 'next/navigation'
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
-}) {
+const items = [
+  {
+    title: "Map",
+    value: "map",
+    icon: LandPlotIcon,
+  },
+  {
+    title: "Assets",
+    value: "assets",
+    icon: FilesIcon,
+  },
+]
+
+export function NavMain() {
   const pathname = usePathname()
 
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {items.map((item) => (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton
-              tooltip={item.title}
-              isActive={pathname === item.url}
-              className="transition-[font-weight]"
-              asChild
-            >
-              <Link href={item.url}>
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        ))}
+        <TabsList>
+          {items.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <TabsTrigger value={item.value} asChild>
+                <SidebarMenuButton
+                  tooltip={item.title}
+                  className="transition-[font-weight]"
+                >
+                  {item.icon && <item.icon />}
+                  <span>{item.title}</span>
+                </SidebarMenuButton>
+              </TabsTrigger>
+            </SidebarMenuItem>
+          ))}
+        </TabsList>
       </SidebarMenu>
     </SidebarGroup>
   )

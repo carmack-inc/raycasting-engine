@@ -1,0 +1,58 @@
+{
+  "editor.tabSize": 2,
+  "editor.rulers": [80, 120],
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "never",
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
+  },
+  "editor.formatOnPaste": false,
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 100,
+  "editor.pasteAs.enabled": false,
+
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+
+  "typescript.preferences.quoteStyle": "double",
+  "typescript.format.semicolons": "insert",
+  "typescript.updateImportsOnFileMove.enabled": "never",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "javascript.preferences.quoteStyle": "double",
+  "javascript.format.semicolons": "insert",
+
+  "conventionalCommits.gitmoji": false,
+  "conventionalCommits.promptFooter": false,
+
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    "class:list",
+  ],
+
+  "eslint.quiet": true,
+  "eslint.rules.customizations": [
+    {
+      "rule": "@stylistic/*",
+      "fixable": true,
+      "severity": "info",
+    },
+    {
+      "rule": "@typescript-eslint/no-unused-vars",
+      "fixable": true,
+      "severity": "info",
+    }
+  ],
+
+  "chat.commandCenter.enabled": false,
+  
+  "prettier.enabled": false,
+}

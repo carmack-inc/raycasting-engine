@@ -4,7 +4,7 @@ import { TabsContent } from '@radix-ui/react-tabs'
 
 export default function Engine() {
   return (
-    <div>
+    <div>     
       <TabsContent value="map">
         <MapContent />
       </TabsContent>
@@ -12,6 +12,7 @@ export default function Engine() {
       <TabsContent value="assets">
         <AssetsContent />
       </TabsContent>
+      
     </div>
   )
 }

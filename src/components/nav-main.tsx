@@ -99,7 +99,7 @@ const groups: Group[] = [
         icon: ArrowUpRightIcon,
       },
       {
-        title: "CoinsIcon",
+        title: "Coins",
         value: "coins",
         icon: CoinsIcon,
       },
@@ -135,6 +135,7 @@ export function NavMain() {
       {groups.map((group, idx) => (
         <SidebarGroup key={idx}>
           {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
+          <hr />
           <SidebarMenu>
             {group.items.map((item) => (
               <SidebarMenuItem key={item.title}>

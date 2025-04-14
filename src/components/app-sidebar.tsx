@@ -1,11 +1,14 @@
 "use client"
 
-import {
-  JoystickIcon
-} from "lucide-react"
-import type React from "react"
+import { JoystickIcon } from "lucide-react";
+import Link from 'next/link';
+import type React from "react";
 
-import { NavMain } from "@/components/nav-main"
+import { NavEntity } from "@/components/nav-entity";
+import { NavEssential } from "@/components/nav-essential";
+import { NavMain } from "@/components/nav-main";
+import { NavObjects } from "@/components/nav-objects";
+import { NavWalls } from "@/components/nav-walls";
 import {
   Sidebar,
   SidebarContent,
@@ -13,8 +16,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem
-} from "@/components/ui/sidebar"
-import Link from 'next/link'
+} from "@/components/ui/sidebar";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -33,6 +35,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
+        <NavEssential />
+        <NavEntity />
+        <NavObjects />
+        <NavWalls />
       </SidebarContent>
     </Sidebar>
   )

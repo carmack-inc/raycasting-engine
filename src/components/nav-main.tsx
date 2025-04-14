@@ -1,125 +1,143 @@
-"use client"
+"use client";
 
 import {
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem
-} from "@/components/ui/sidebar"
-import { TabsList, TabsTrigger } from '@radix-ui/react-tabs'
-import { House, Cog, Boxes, Diamond, Flag, Skull, PersonStanding, Sword, ArrowUpRight, HeartPulse, Coins, Square, LandPlot} from "lucide-react"
-import { usePathname } from 'next/navigation'
+} from "@/components/ui/sidebar";
+import { ArrowUpRightIcon, AsteriskIcon, BoxesIcon, CogIcon, CoinsIcon, DiamondIcon, FlagIcon, HeartPulseIcon, HouseIcon, LucideIcon, PersonStandingIcon, SkullIcon, SquareIcon, SwordIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
 
-const items = [
+interface Group {
+  label?: string
+  items: GroupItem[]
+}
+
+interface GroupItem {
+  title: string
+  value: string
+  icon: LucideIcon,
+  required?: boolean
+}
+
+const groups: Group[] = [
   {
-    title: "Home",
-    value: "Home",
-    icon: House,
+    items: [
+      {
+        title: "Home",
+        value: "home",
+        icon: HouseIcon,
+      },
+      {
+        title: "Settings",
+        value: "config",
+        icon: CogIcon,
+      },
+      {
+        title: "Assets",
+        value: "assets",
+        icon: BoxesIcon,
+      },
+    ]
   },
   {
-    title: "Configurações",
-    value: "config",
-    icon: Cog,
+    label: "Essential",
+    items: [
+      {
+        title: "Spawn Player",
+        value: "",
+        icon: DiamondIcon,
+        required: true,
+      },
+      {
+        title: "End",
+        value: "end",
+        icon: FlagIcon,
+      },
+      {
+        title: "Death",
+        value: "death",
+        icon: SkullIcon,
+      },
+    ]
   },
   {
-    title: "Assets",
-    value: "assets",
-    icon: Boxes,
+    label: "Entity",
+    items: [
+      {
+        title: "Player",
+        value: "player",
+        icon: PersonStandingIcon,
+        required: true,
+      },
+      {
+        title: "Gladiator",
+        value: "gladiator",
+        icon: SwordIcon,
+      },
+      {
+        title: "Archer",
+        value: "archer",
+        icon: ArrowUpRightIcon,
+      },
+    ]
   },
   {
-    title: "Essencial",
-    value: "Essencial",
+    label: "Objects",
+    items: [
+      {
+        title: "Life",
+        value: "life",
+        icon: HeartPulseIcon,
+      },
+      {
+        title: "Arrow",
+        value: "arrow",
+        icon: ArrowUpRightIcon,
+      },
+      {
+        title: "CoinsIcon",
+        value: "coins",
+        icon: CoinsIcon,
+      },
+    ]
   },
   {
-    title: "Spawn Player*",
-    value: "",
-    icon: Diamond,
-  },
-  {
-    title: "Map",
-    value: "map",
-    icon: LandPlot,
-  },
-  {
-    title: "Fim",
-    value: "fim",
-    icon: Flag,
-  },
-  {
-    title: "Morte",
-    value: "morte",
-    icon: Skull,
-  },
-  {
-    title: "Entidades",
-    value: "entidades",
-  },
-  {
-    title: "Player*",
-    value: "player",
-    icon: PersonStanding,
-  },
-  {
-    title: "Gladiador",
-    value: "gladiador",
-    icon: Sword,
-  },
-  {
-    title: "Arqueiro",
-    value: "arqueiro",
-    icon: ArrowUpRight,
-  },
-  {
-    title: "Objetos",
-    value: "objetos",
-  },
-  {
-    title: "Vida",
-    value: "vida",
-    icon: HeartPulse,
-  },
-  {
-    title: "Flecha",
-    value: "flecha",
-    icon: ArrowUpRight,
-  },
-  {
-    title: "Moedas",
-    value: "moedas",
-    icon: Coins,
-  },
-  {
-    title: "Paredes",
-    value: "paredes",
-  },
-  {
-    title: "Preto",
-    value: "preto",
-    icon: Square,
-  },
-  {
-    title: "Vermelho",
-    value: "vermelho",
-    icon: Square,
-  },
-  {
-    title: "Verde",
-    value: "verde",
-    icon: Square,
+    label: "Walls",
+    items: [
+      {
+        title: "Black",
+        value: "black",
+        icon: SquareIcon,
+      },
+      {
+        title: "Red",
+        value: "red",
+        icon: SquareIcon,
+      },
+      {
+        title: "Green",
+        value: "green",
+        icon: SquareIcon,
+      },
+    ]
   }
-  
-]
+];
 
 export function NavMain() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
-    <SidebarGroup>
-      <SidebarMenu>
-        <TabsList>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <TabsTrigger value={item.value} asChild>
+    <>
+      {groups.map((group, idx) => (
+        <SidebarGroup key={idx}>
+          {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
+          <SidebarMenu>
+            {group.items.map((item) => (
+              <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton
                   tooltip={item.title}
                   className="transition-[font-weight]"
@@ -127,11 +145,16 @@ export function NavMain() {
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </SidebarMenuButton>
-              </TabsTrigger>
-            </SidebarMenuItem>
-          ))}
-        </TabsList>
-      </SidebarMenu>
-    </SidebarGroup>
-  )
+                {item.required && (
+                  <SidebarMenuBadge>
+                    <AsteriskIcon className="size-4 text-amber-500 dark:text-amber-400" />
+                  </SidebarMenuBadge>
+                )}
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+      ))}
+    </>
+  );
 }

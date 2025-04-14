@@ -1,41 +1,47 @@
+import { InputManager } from "./inputClass";
 import { Player } from "./player";
-import { RayCast } from "./raycast";
+import { Renderer } from "./renderer";
 
 export class Core {
-  private _canvas: HTMLCanvasElement;
-  private _ctx: CanvasRenderingContext2D;
-  public get canvas(): HTMLCanvasElement {
-    return this._canvas;
-  }
-
-  private currentTime: number;
-  private timeAccumulator: number;
+  private _player: Player;
+  private _input: InputManager;
+  private _renderer: Renderer;
+  private _currentTime: number;
+  private _timeAccumulator: number;
+  private _stopLoop: boolean;
   private readonly FPS = 60;
   private readonly timePerFrame = 1000 / this.FPS;
-  constructor(canvas: HTMLCanvasElement) {
-    this._canvas = canvas;
-    const ctx = this._canvas.getContext("2d");
-    if (!ctx) throw Error();
-    this._ctx = ctx;
-    this.currentTime = Date.now();
-    this.timeAccumulator = 0;
+  constructor(player: Player, input: InputManager, renderer: Renderer) {
+    this._player = player;
+    this._input = input;
+    this._renderer = renderer;
+    this._currentTime = Date.now();
+    this._stopLoop = false;
+    this._timeAccumulator = 0;
   }
   start() {
-    window.requestAnimationFrame(this.gameLoop);
+    window.requestAnimationFrame(this.gameLoop.bind(this));
+  }
+
+  stop() {
+    this._stopLoop = true;
   }
 
   private gameLoop(newCurrentTime: number) {
-    const frameTime = newCurrentTime - this.currentTime;
+    const frameTime = newCurrentTime - this._currentTime;
 
-    this.currentTime = newCurrentTime;
-    if (frameTime > 0) this.timeAccumulator += frameTime;
+    this._currentTime = newCurrentTime;
+    if (frameTime > 0) this._timeAccumulator += frameTime;
 
-    while (this.timeAccumulator >= this.timePerFrame) {
+    while (this._timeAccumulator >= this.timePerFrame) {
       //console.log((1 / frameTime) * 1000);
-      Player.getInstance().update();
-      this.timeAccumulator -= this.timePerFrame;
+      const keyboardSet = this._input.getKeyboardSet();
+      const mouseMovement = this._input.consumeMouseInput();
+      this._player.update(keyboardSet, mouseMovement);
+      this._timeAccumulator -= this.timePerFrame;
     }
-    RayCast.draw(this._ctx);
-    window.requestAnimationFrame(this.gameLoop);
+    this._renderer.render();
+    if (this._stopLoop) return;
+    window.requestAnimationFrame(this.gameLoop.bind(this));
   }
 }

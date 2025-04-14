@@ -1,61 +1,62 @@
-import { colors } from "./colors";
-import { drawMinimap } from "./minimap";
-import { paintLine } from "./paint";
-import { Player } from "./player";
 import { Settings } from "./settingsClass";
-import { getPerpVec, Vec2 } from "./vec2";
+import { Vec2, Vector } from "./vector";
 
 type DDAFunction = {
   initialPos: Vec2;
   rayDirection: Vec2;
 };
 
-export class RayCast {
-  static draw(ctx: CanvasRenderingContext2D) {
-    const MAP = Settings.getInstance().map;
-    const pos = Player.getInstance().position;
-    const rayDir = Player.getInstance().direction;
-    const euclidianDistArray: Vec2[] = [];
-    const perpRayDir = getPerpVec(rayDir);
-    ctx.reset();
+type Sides = "x" | "y";
 
-    const CANVAS_WIDTH = Settings.getInstance().canvasWidth;
+export type RayInfo = {
+  perpDist: number;
+  mapHit: Vec2;
+  rayDirection: Vec2;
+  side: Sides;
+};
+
+export class RayCast {
+  private _settings: Settings;
+  constructor(settings: Settings) {
+    this._settings = settings;
+  }
+
+  castAllRays(playerPosition: Vec2, playerDirection: Vec2): RayInfo[] {
+    // const pos = this._player.position;
+    // const rayDir = this._player.direction;
+    const raysInfo: RayInfo[] = [];
+    const perpRayDir = Vector.findPerpVector(playerDirection);
+
+    const CANVAS_WIDTH = this._settings.canvasWidth;
     for (let i = 0; i < CANVAS_WIDTH; i++) {
       const offsetXViewport = 1 - (2 * i) / CANVAS_WIDTH;
 
       const rayDirection = {
-        x: perpRayDir.x * offsetXViewport + rayDir.x,
-        y: perpRayDir.y * offsetXViewport + rayDir.y,
+        x: perpRayDir.x * offsetXViewport + playerDirection.x,
+        y: perpRayDir.y * offsetXViewport + playerDirection.y,
       };
 
-      const { perpDist, mapHit } = this.findPerpendicularDistance({
-        initialPos: pos,
+      const wallInfo = this.castRay({
+        initialPos: playerPosition,
         rayDirection,
       });
 
-      const euclidianDist = {
-        x: rayDirection.x * perpDist,
-        y: rayDirection.y * perpDist,
-      };
-
-      euclidianDistArray.push(euclidianDist);
-
-      const { lineStart, lineEnd } = this.calculteLineHeight(i, perpDist);
-
-      paintLine(lineStart, lineEnd, colors[MAP[mapHit.y][mapHit.x]], ctx);
+      raysInfo.push(wallInfo);
     }
-    drawMinimap(euclidianDistArray, ctx);
+
+    return raysInfo;
   }
 
-  static findPerpendicularDistance({ initialPos, rayDirection }: DDAFunction) {
+  castRay({ initialPos, rayDirection }: DDAFunction): RayInfo {
     const pos = { x: initialPos.x, y: initialPos.y };
     const mapPos = { x: Math.floor(pos.x), y: Math.floor(pos.y) };
-    let side: "x" | "y" = "x";
+    let side: Sides = "x";
 
     if (this.hitFunction(mapPos)) {
       return {
         perpDist: 0,
         mapHit: { x: mapPos.x, y: mapPos.y },
+        rayDirection,
         side,
       };
     }
@@ -94,18 +95,20 @@ export class RayCast {
       return {
         perpDist: sideDist.x - deltaDist.x,
         mapHit: { x: mapPos.x, y: mapPos.y },
+        rayDirection,
         side: "x",
       };
 
     return {
       perpDist: sideDist.y - deltaDist.y,
       mapHit: { x: mapPos.x, y: mapPos.y },
+      rayDirection,
       side: "y",
     };
   }
 
-  static hitFunction(mapPos: Vec2) {
-    const MAP = Settings.getInstance().map;
+  hitFunction(mapPos: Vec2) {
+    const MAP = this._settings.map;
     if (mapPos.y > MAP.length - 1) return true;
     if (mapPos.x > MAP[0].length - 1) return true;
     if (mapPos.y < 0) return true;
@@ -114,7 +117,7 @@ export class RayCast {
     return false;
   }
 
-  static findSidesSize(rayDir: Vec2, pos: Vec2, mapPos: Vec2): Vec2 {
+  findSidesSize(rayDir: Vec2, pos: Vec2, mapPos: Vec2): Vec2 {
     let sideDist = { x: 0, y: 0 };
 
     if (rayDir.x > 0) {
@@ -132,17 +135,17 @@ export class RayCast {
     return sideDist;
   }
 
-  static calculteLineHeight(column: number, perpDist: number) {
-    const CANVAS_HEIGHT = Settings.getInstance().canvasHeight;
+  calculteLineHeight(column: number, perpDist: number) {
+    const CANVAS_HEIGHT = this._settings.canvasHeight;
     const lineHeight = Math.floor(CANVAS_HEIGHT / perpDist);
     const lineStart = -lineHeight / 2 + CANVAS_HEIGHT / 2;
     const lineEnd = lineHeight / 2 + CANVAS_HEIGHT / 2;
 
     return {
-      lineStart: { x: column, y: lineStart < 0 ? 0 : lineStart },
+      lineStart: { x: column, y: lineStart < 0 ? 0 : Math.floor(lineStart) },
       lineEnd: {
         x: column,
-        y: lineEnd >= CANVAS_HEIGHT ? CANVAS_HEIGHT - 1 : lineEnd,
+        y: lineEnd >= CANVAS_HEIGHT ? CANVAS_HEIGHT - 1 : Math.floor(lineEnd),
       },
     };
   }

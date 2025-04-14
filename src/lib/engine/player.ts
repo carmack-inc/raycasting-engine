@@ -1,7 +1,8 @@
 import { Settings } from "./settingsClass";
-import { Input } from "./inputClass";
+import { FlagsType } from "./inputClass";
+import { Vector } from "./vector";
 
-type generatePlayerType = {
+export type GeneratePlayerType = {
   position: {
     x: number;
     y: number;
@@ -14,13 +15,8 @@ type generatePlayerType = {
   rotateSpeed: number;
 };
 
-const POSITION = { x: 3, y: 9 };
-const DIRECTION = { x: 1, y: 0 };
-const WALK_SPEED = 0.05;
-const ROTATE_SPEED = 3;
-
 export class Player {
-  private static instance: Player | null = null;
+  private _settings: Settings;
   private _position: { x: number; y: number };
   public get position(): { x: number; y: number } {
     return this._position;
@@ -39,42 +35,52 @@ export class Player {
     return this._rotateSpeed;
   }
 
-  private constructor(options: generatePlayerType) {
+  private actions: Record<FlagsType, Function>;
+
+  constructor(options: GeneratePlayerType, settings: Settings) {
     this._position = options.position;
     this._direction = options.direction;
     this._walkSpeed = options.walkSpeed;
     this._rotateSpeed = options.rotateSpeed;
     this._movementVector = { x: 0, y: 0 };
+    this.actions = this.createActions();
+    this._settings = settings;
   }
 
-  static getInstance(options?: generatePlayerType): Player {
-    if (this.instance != null) return this.instance;
+  private createActions(): Record<FlagsType, Function> {
+    return {
+      UP_KEY: () => {
+        this._movementVector.x += this._direction.x;
+        this._movementVector.y += this._direction.y;
+      },
+      DOWN_KEY: () => {
+        this._movementVector.x -= this._direction.x;
+        this._movementVector.y -= this._direction.y;
+      },
+      LEFT_KEY: () => {
+        const towardVec = Vector.findPerpVector(this._direction);
+        this._movementVector.x += towardVec.x;
+        this._movementVector.y += towardVec.y;
+      },
+      RIGHT_KEY: () => {
+        const towardVec = Vector.findPerpVector(this._direction);
+        this._movementVector.x -= towardVec.x;
+        this._movementVector.y -= towardVec.y;
+      },
+    };
+  }
 
-    if (options != null) {
-      this.instance = new Player(options);
-      return this.instance;
-    }
+  update(keyboardSet: Set<FlagsType>, mouseOffsetX: number) {
+    this.walk(keyboardSet);
+    this.rotate(mouseOffsetX);
+  }
 
-    this.instance = new Player({
-      position: POSITION,
-      direction: DIRECTION,
-      walkSpeed: WALK_SPEED,
-      rotateSpeed: ROTATE_SPEED,
+  private walk(keyboardSet: Set<FlagsType>) {
+    const MAP = this._settings.map;
+    this._movementVector = { x: 0, y: 0 };
+    keyboardSet.forEach((flag) => {
+      this.actions[flag]();
     });
-
-    return this.instance;
-  }
-
-  update() {
-    this.walk();
-    this.rotate();
-  }
-
-  private walk() {
-    const MAP = Settings.getInstance().map;
-    this._movementVector = Input.getInstance().generateMoveVector(
-      this._direction
-    );
 
     if (
       MAP[Math.floor(this._position.y)][
@@ -91,11 +97,10 @@ export class Player {
       this._position.y -= this._movementVector.y * this._walkSpeed; // NEGATIVE Y AXIS IN CANVAS
   }
 
-  private rotate() {
+  private rotate(mouseOffsetX: number) {
     const oldDir = { x: this._direction.x, y: this._direction.y };
     const rotateAngle =
-      -(Input.getInstance().mouseOffsetX / Settings.getInstance().canvasWidth) *
-      this._rotateSpeed;
+      -(mouseOffsetX / this._settings.canvasWidth) * this._rotateSpeed;
 
     this._direction.x =
       this._direction.x * Math.cos(rotateAngle) -
@@ -103,7 +108,5 @@ export class Player {
     this._direction.y =
       oldDir.x * Math.sin(rotateAngle) +
       this._direction.y * Math.cos(rotateAngle);
-
-    Input.getInstance().mouseOffsetX = 0;
   }
 }

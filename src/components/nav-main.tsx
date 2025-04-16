@@ -99,7 +99,7 @@ const groups: Group[] = [
         icon: ArrowUpRightIcon,
       },
       {
-        title: "CoinsIcon",
+        title: "Coins",
         value: "coins",
         icon: CoinsIcon,
       },

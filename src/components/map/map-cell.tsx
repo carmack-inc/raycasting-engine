@@ -4,6 +4,7 @@ import { SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel } from "@/components/ui/select";
 import { ArrowUpRightIcon, BrickWallIcon, CoinsIcon, DiamondIcon, FlagIcon, HeartPulseIcon, LucideIcon, LucideProps, PersonStandingIcon, SkullIcon, SwordIcon } from "lucide-react";
+import { memo } from "react";
 
 export type CellValue = CellEssential | CellEntity | CellObject | CellWall
 export type CellEssential = "spawn-player" | "end" | "death"
@@ -58,15 +59,20 @@ const groups: CellGroup[] = [
 ];
 
 interface MapCellProps {
+  id: number
   value: CellValue | undefined
-  onValueChange: (value: CellValue | undefined) => void
+  onValueChange: (value: CellValue | undefined, id: number) => void
 }
 
-export function MapCell({ value, onValueChange }: MapCellProps) {
+function InnerMapCell({ value, id, onValueChange }: MapCellProps) {
+  function handleValueChange(value: string) {
+    onValueChange(value as CellValue, id)
+  }
+
   return (
     <Select
       defaultValue={value}
-      onValueChange={(value) => onValueChange(value as CellValue)}
+      onValueChange={handleValueChange}
     >
       <SelectTrigger asChild>
         <Button
@@ -102,6 +108,8 @@ export function MapCell({ value, onValueChange }: MapCellProps) {
     </Select>
   );
 }
+
+export const MapCell = memo(InnerMapCell)
 
 const icons: Record<CellValue, LucideIcon> = {
   "end": FlagIcon,

@@ -2,7 +2,7 @@
 
 import { CellValue, MapCell } from "@/components/map/map-cell";
 import { MapControls } from "@/components/map/map-controls";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 const COLUMNS = 25;
 const ROWS = 25;
@@ -15,9 +15,9 @@ export function MapContent() {
   const [zoom, setZoom] = useState(7);
   const [map, setMap] = useState(createInitialMap)
 
-  function handleCellChange(index: number, value: CellValue | undefined) {
+  const handleCellChange = useCallback((value: CellValue | undefined, index: number) => {
     setMap((map) => map.with(index, value))
-  }
+  }, [])
 
   return (
     <div className="w-full h-[calc(100svh-var(--navbar-height)-theme(spacing.4))] overflow-auto relative">
@@ -32,8 +32,9 @@ export function MapContent() {
           {map.map((value, idx) => (
             <MapCell
               key={idx}
+              id={idx}
               value={value}
-              onValueChange={(value) => handleCellChange(idx, value)}
+              onValueChange={handleCellChange}
             />
           ))}
         </div>

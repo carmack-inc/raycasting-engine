@@ -16,8 +16,8 @@ export default function EngineLayout({ children }: EngineLayoutProps) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-12 shrink-0 items-center gap-2 transition-[width] ease-linear border-b">
+      <SidebarInset className="min-w-0 [--navbar-height:theme(spacing.12)]">
+        <header className="flex h-[--navbar-height] shrink-0 items-center gap-2 transition-[width] ease-linear border-b">
           <div className="flex items-center gap-2 px-4 w-full">
             <SidebarTrigger className="-ml-1" />
             <div className="ml-auto flex items-center gap-x-2">
@@ -26,7 +26,7 @@ export default function EngineLayout({ children }: EngineLayoutProps) {
             </div>
           </div>
         </header>
-        <div className="p-4">{children}</div>
+        <div>{children}</div>
       </SidebarInset>
     </SidebarProvider>
   )

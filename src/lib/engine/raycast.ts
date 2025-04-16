@@ -36,12 +36,12 @@ export class RayCast {
         y: perpRayDir.y * offsetXViewport + playerDirection.y,
       };
 
-      const wallInfo = this.castRay({
+      const rayInfo = this.castRay({
         initialPos: playerPosition,
         rayDirection,
       });
 
-      raysInfo.push(wallInfo);
+      raysInfo.push(rayInfo);
     }
 
     return raysInfo;
@@ -107,13 +107,10 @@ export class RayCast {
     };
   }
 
-  hitFunction(mapPos: Vec2) {
+  hitFunction(cell: Vec2) {
     const MAP = this._settings.map;
-    if (mapPos.y > MAP.length - 1) return true;
-    if (mapPos.x > MAP[0].length - 1) return true;
-    if (mapPos.y < 0) return true;
-    if (mapPos.x < 0) return true;
-    if (MAP[mapPos.y][mapPos.x] > 0) return true;
+    if (this.isCellOutOfBounds(cell)) return true;
+    if (MAP[cell.y][cell.x] > 0) return true;
     return false;
   }
 
@@ -135,18 +132,24 @@ export class RayCast {
     return sideDist;
   }
 
-  calculteLineHeight(column: number, perpDist: number) {
+  isCellOutOfBounds(cell: Vec2) {
+    if (cell.y > this._settings.map.length - 1) return true;
+    if (cell.x > this._settings.map[0].length - 1) return true;
+    if (cell.y < 0) return true;
+    if (cell.x < 0) return true;
+    return false;
+  }
+
+  calculteLineHeight(perpDist: number) {
     const CANVAS_HEIGHT = this._settings.canvasHeight;
     const lineHeight = Math.floor(CANVAS_HEIGHT / perpDist);
     const lineStart = -lineHeight / 2 + CANVAS_HEIGHT / 2;
     const lineEnd = lineHeight / 2 + CANVAS_HEIGHT / 2;
 
     return {
-      lineStart: { x: column, y: lineStart < 0 ? 0 : Math.floor(lineStart) },
-      lineEnd: {
-        x: column,
-        y: lineEnd >= CANVAS_HEIGHT ? CANVAS_HEIGHT - 1 : Math.floor(lineEnd),
-      },
+      lineStart: lineStart < 0 ? 0 : Math.floor(lineStart),
+      lineEnd:
+        lineEnd >= CANVAS_HEIGHT ? CANVAS_HEIGHT - 1 : Math.floor(lineEnd),
     };
   }
 }

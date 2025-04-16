@@ -97,8 +97,8 @@ export function Game() {
 
     const player = new Player(
       {
-        position: POSITION,
-        direction: DIRECTION,
+        position: { x: POSITION.x, y: POSITION.y },
+        direction: { x: DIRECTION.x, y: DIRECTION.y },
         rotateSpeed: ROTATE_SPEED,
         walkSpeed: WALK_SPEED,
       },

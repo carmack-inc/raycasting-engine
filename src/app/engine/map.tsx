@@ -29,10 +29,10 @@ export function MapContent() {
             "--zoom": zoom,
           } as React.CSSProperties}
         >
-          {Array.from({ length: COLUMNS * ROWS }).map((_, idx) => (
+          {map.map((value, idx) => (
             <MapCell
               key={idx}
-              value={map[idx]}
+              value={value}
               onValueChange={(value) => handleCellChange(idx, value)}
             />
           ))}

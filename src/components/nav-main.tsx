@@ -135,7 +135,6 @@ export function NavMain() {
       {groups.map((group, idx) => (
         <SidebarGroup key={idx}>
           {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
-          <hr />
           <SidebarMenu>
             {group.items.map((item) => (
               <SidebarMenuItem key={item.title}>

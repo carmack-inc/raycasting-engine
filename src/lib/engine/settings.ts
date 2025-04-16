@@ -64,8 +64,8 @@ export const colors: Record<ColorOptions, string> = {
   7: RGB.yellow,
 };
 
-export const CANVAS_WIDTH = 640; // USER PREFERENCE
-export const CANVAS_HEIGHT = 480; // USER PREFERENCE
+export const CANVAS_WIDTH = 1280; // USER PREFERENCE
+export const CANVAS_HEIGHT = 720; // USER PREFERENCE
 
 // export const CANVAS_MINIMAP_WIDTH: number = MAP[0].length;
 // export const CANVAS_MINIMAP_HEIGHT: number = MAP.length;

@@ -1,14 +1,23 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { ZoomInIcon, ZoomOutIcon } from "lucide-react";
+import { CellValue, MapCell } from "@/components/map/map-cell";
+import { MapControls } from "@/components/map/map-controls";
 import { useState } from "react";
 
-const COLUMNS = 70;
-const ROWS = 70;
+const COLUMNS = 25;
+const ROWS = 25;
+
+function createInitialMap() {
+  return Array.from<CellValue | undefined>({ length: ROWS * COLUMNS })
+}
 
 export function MapContent() {
   const [zoom, setZoom] = useState(7);
+  const [map, setMap] = useState(createInitialMap)
+
+  function handleCellChange(index: number, value: CellValue | undefined) {
+    setMap((map) => map.with(index, value))
+  }
 
   return (
     <div className="w-full h-[calc(100svh-var(--navbar-height)-theme(spacing.4))] overflow-auto relative">
@@ -20,46 +29,18 @@ export function MapContent() {
             "--zoom": zoom,
           } as React.CSSProperties}
         >
-          {Array.from({ length: COLUMNS * ROWS }).map((_, cell) => (
-            <MapCell key={cell} />
+          {Array.from({ length: COLUMNS * ROWS }).map((_, idx) => (
+            <MapCell
+              key={idx}
+              value={map[idx]}
+              onValueChange={(value) => handleCellChange(idx, value)}
+            />
           ))}
         </div>
       </div>
 
-      <div className="fixed z-10 right-6 bottom-6 -space-x-px">
-        <Button
-          className="rounded-r-none"
-          size="icon"
-          variant="outline"
-          aria-label="Zoom out"
-          disabled={zoom === 4}
-          onClick={() => setZoom((zoom) => Math.max(zoom - 1, 4))}
-        >
-          <ZoomOutIcon />
-        </Button>
-        <Button
-          className="rounded-l-none"
-          size="icon"
-          variant="outline"
-          aria-label="Zoom in"
-          disabled={zoom === 10}
-          onClick={() => setZoom((zoom) => Math.min(zoom + 1, 10))}
-        >
-          <ZoomInIcon />
-        </Button>
-      </div>
+      <MapControls zoom={zoom} onZoomChange={setZoom} />
     </div>
   )
 }
 
-function MapCell() {
-  return (
-    <Button
-      className="size-[--cell-size] rounded-none px-0"
-      variant="outline"
-      size="icon"
-    >
-
-    </Button>
-  )
-}

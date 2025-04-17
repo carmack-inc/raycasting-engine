@@ -1,9 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { RequiredBadge } from "@/components/required-badge";
-import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ArrowUpRightIcon, BrickWallIcon, CoinsIcon, DiamondIcon, FlagIcon, HeartPulseIcon, PersonStandingIcon, SkullIcon, SwordIcon } from "lucide-react";
-import { Item } from "@radix-ui/react-context-menu";
 
 interface CellGroup {
   label: string

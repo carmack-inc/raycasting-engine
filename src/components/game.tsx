@@ -2,12 +2,12 @@
 
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
-import { InputManager } from "@/lib/engine/inputClass";
-import { CanvasPaint } from "@/lib/engine/paintClass";
+import { InputManager } from "@/lib/engine/inputManager";
+import { CanvasPaint } from "@/lib/engine/paint";
+
 import { Player } from "@/lib/engine/player";
-import { RayCast } from "@/lib/engine/raycast";
-import { Renderer } from "@/lib/engine/renderer";
-import { Settings } from "@/lib/engine/settingsClass";
+import { Renderer } from "@/lib/engine/render/renderer";
+import { Settings } from "@/lib/engine/settings";
 import { useEffect, useRef } from "react";
 
 const MAP: ColorOptions[][] = [
@@ -38,7 +38,7 @@ const RIGHT_KEY = "D"; // USER PREFERENCE
 const WALK_SPEED = 0.05;
 const ROTATE_SPEED = 3;
 const POSITION = { x: 3, y: 9 };
-export let DIRECTION = { x: 1, y: 0 };
+const DIRECTION = { x: 1, y: 0 };
 
 export function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -107,7 +107,7 @@ export function Game() {
 
     const canvasPaint = new CanvasPaint(canvas);
 
-    const renderer = new Renderer(player, settings, canvasPaint);
+    const renderer = new Renderer(settings, canvasPaint);
     const core = new Core(player, input, renderer);
     core.start();
 

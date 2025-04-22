@@ -1,7 +1,6 @@
 import { Vec2 } from "./vector";
 
 export interface Paint {
-  reset(): void;
   paintRect(pos: Vec2, size: { w: number; h: number }, color: string): void;
   paintLine(start: Vec2, end: Vec2, color: string): void;
   paintCircle(center: Vec2, radius: number, color: string): void;
@@ -19,9 +18,6 @@ export class CanvasPaint implements Paint {
     this._ctx = ctx;
   }
 
-  reset() {
-    this._ctx.reset();
-  }
   paintRect(pos: Vec2, size: { w: number; h: number }, color: string) {
     this._ctx.fillStyle = color;
     this._ctx.fillRect(pos.x, pos.y, size.w, size.h);

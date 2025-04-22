@@ -1,6 +1,6 @@
-import { describe, expect, it, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { RayCast } from "./raycast";
-import { GenerateSettingsType, Settings } from "./settingsClass";
+import { GenerateSettingsType, Settings } from "./settings";
 import { ColorOptions } from "./colors";
 
 function generateSettings(map: ColorOptions[][]): GenerateSettingsType {
@@ -24,7 +24,7 @@ function generateSettings(map: ColorOptions[][]): GenerateSettingsType {
 }
 
 describe("Function: findPerpendicularDistance", () => {
-  test("if the perpDist is 0 and mapHit is the same as player when player is in a wall", async () => {
+  it("should return perpDist 0 and mapHit in the same cell as player when player is in a wall", async () => {
     const raycast = new RayCast(new Settings(generateSettings([])));
     const { perpDist, mapHit } = raycast.castRay({
       initialPos: { x: 0, y: 0 },
@@ -35,7 +35,7 @@ describe("Function: findPerpendicularDistance", () => {
     expect(mapHit).toEqual({ x: 0, y: 0 });
   });
 
-  test("if function returns correct values when the ray hits the map boundary by the x axis", async () => {
+  it("should return correct values when the ray hits the map boundary by the x axis", async () => {
     const raycast = new RayCast(new Settings(generateSettings([[0]])));
 
     const res = raycast.castRay({
@@ -49,11 +49,12 @@ describe("Function: findPerpendicularDistance", () => {
         x: -1,
         y: 0,
       },
+      rayDirection: { x: -1, y: 0 },
       side: "x",
     });
   });
 
-  test("if function returns correct values when the ray hits the map boundary by the y axis", async () => {
+  it("should return correct values when the ray hits the map boundary by the y axis", async () => {
     const raycast = new RayCast(new Settings(generateSettings([[0]])));
 
     const res = raycast.castRay({
@@ -67,11 +68,12 @@ describe("Function: findPerpendicularDistance", () => {
         x: 0,
         y: 1,
       },
+      rayDirection: { x: 0, y: -1 },
       side: "y",
     });
   });
 
-  test("if function returns correct values when the ray hits a wall by the x axis", async () => {
+  it("should return correct values when the ray hits a wall by the x axis", async () => {
     const raycast = new RayCast(new Settings(generateSettings([[1, 0]])));
 
     const res = raycast.castRay({
@@ -85,11 +87,12 @@ describe("Function: findPerpendicularDistance", () => {
         x: 0,
         y: 0,
       },
+      rayDirection: { x: -1, y: 0 },
       side: "x",
     });
   });
 
-  test("if function returns correct values when the ray hits a wall by y the axis", async () => {
+  it("should return correct values when the ray hits a wall by y the axis", async () => {
     const raycast = new RayCast(new Settings(generateSettings([[0], [1]])));
     const res = raycast.castRay({
       initialPos: { x: 0.5, y: 0.5 },
@@ -102,11 +105,12 @@ describe("Function: findPerpendicularDistance", () => {
         x: 0,
         y: 1,
       },
+      rayDirection: { x: 0, y: -1 },
       side: "y",
     });
   });
 
-  test("if function returns correct values when ray is not orthogonal to standard euclidian basis", async () => {
+  it("should return correct values when ray is not orthogonal to standard euclidian basis", async () => {
     const raycast = new RayCast(
       new Settings(
         generateSettings([
@@ -128,13 +132,14 @@ describe("Function: findPerpendicularDistance", () => {
         x: 1,
         y: 0,
       },
+      rayDirection: { x: 1, y: 1 },
       side: "y",
     });
   });
 });
 
 describe("Function: findSidesSize", () => {
-  test("if right distance is correct in the x axis", () => {
+  it("should calcute the right distance correctly in the x axis", () => {
     const raycast = new RayCast(new Settings(generateSettings([[0]])));
     const mapPos = { x: 0, y: 0 };
     const pos = { x: mapPos.x + 0.2, y: mapPos.y + 0.2 };
@@ -144,7 +149,7 @@ describe("Function: findSidesSize", () => {
     expect(sideDist.x).toBeCloseTo(0.8);
   });
 
-  test("if left distance is correct in the x axis", () => {
+  it("should calcute the left distance correctly in the x axis", () => {
     const raycast = new RayCast(new Settings(generateSettings([[0]])));
     const mapPos = { x: 0, y: 0 };
     const pos = { x: mapPos.x + 0.2, y: mapPos.y + 0.2 };
@@ -154,7 +159,7 @@ describe("Function: findSidesSize", () => {
     expect(sideDist.x).toBeCloseTo(0.2);
   });
 
-  test("if up distance is correct in the y axis", () => {
+  it("should calcute the up distance correctly in the y axis", () => {
     const raycast = new RayCast(new Settings(generateSettings([[0]])));
     const mapPos = { x: 0, y: 0 };
     const pos = { x: mapPos.x + 0.2, y: mapPos.y + 0.2 };
@@ -164,7 +169,7 @@ describe("Function: findSidesSize", () => {
     expect(sideDist.y).toBeCloseTo(0.2);
   });
 
-  test("if down distance is correct in the y axis", () => {
+  it("should calcute the down distance correctly in the y axis", () => {
     const raycast = new RayCast(new Settings(generateSettings([[0]])));
     const mapPos = { x: 0, y: 0 };
     const pos = { x: mapPos.x + 0.2, y: mapPos.y + 0.2 };
@@ -174,7 +179,7 @@ describe("Function: findSidesSize", () => {
     expect(sideDist.y).toBeCloseTo(0.8);
   });
 
-  test("if distance is correct for positive axes", () => {
+  it("should calcute the distance correctly for positive axes", () => {
     const raycast = new RayCast(new Settings(generateSettings([[0]])));
     const mapPos = { x: 0, y: 0 };
     const pos = { x: mapPos.x + 0.2, y: mapPos.y + 0.2 };
@@ -185,7 +190,7 @@ describe("Function: findSidesSize", () => {
     expect(sideDist.y).toBeCloseTo(0.2);
   });
 
-  test("if distance is correct for negative axes", () => {
+  it("should calcute the distance correctly for negative axes", () => {
     const raycast = new RayCast(new Settings(generateSettings([[0]])));
     const mapPos = { x: 0, y: 0 };
     const pos = { x: mapPos.x + 0.2, y: mapPos.y + 0.2 };
@@ -196,7 +201,7 @@ describe("Function: findSidesSize", () => {
     expect(sideDist.y).toBeCloseTo(0.8);
   });
 
-  test("if distance is correct given a negative x axis and positive y axis ", () => {
+  it("should calcute the distance correctly given a negative x axis and positive y axis ", () => {
     const raycast = new RayCast(new Settings(generateSettings([[0]])));
     const mapPos = { x: 0, y: 0 };
     const pos = { x: mapPos.x + 0.2, y: mapPos.y + 0.2 };
@@ -207,7 +212,7 @@ describe("Function: findSidesSize", () => {
     expect(sideDist.y).toBeCloseTo(0.2);
   });
 
-  test("if distance is correct given a positive x axis and negative y axis ", () => {
+  it("should calcute the distance correctly given a positive x axis and negative y axis ", () => {
     const raycast = new RayCast(new Settings(generateSettings([[0]])));
     const mapPos = { x: 0, y: 0 };
     const pos = { x: mapPos.x + 0.2, y: mapPos.y + 0.2 };

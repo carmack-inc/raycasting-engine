@@ -1,6 +1,6 @@
-import { InputManager } from "./inputClass";
+import { InputManager } from "./inputManager";
 import { Player } from "./player";
-import { Renderer } from "./renderer";
+import { Renderer } from "./render/renderer";
 
 export class Core {
   private _player: Player;
@@ -40,7 +40,7 @@ export class Core {
       this._player.update(keyboardSet, mouseMovement);
       this._timeAccumulator -= this.timePerFrame;
     }
-    this._renderer.render();
+    this._renderer.render(this._player);
     if (this._stopLoop) return;
     window.requestAnimationFrame(this.gameLoop.bind(this));
   }

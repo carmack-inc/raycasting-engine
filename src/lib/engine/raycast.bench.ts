@@ -2,7 +2,7 @@ import { bench } from "vitest";
 import { ColorOptions } from "./colors";
 import { Vec2 } from "./vector";
 import { RayCast } from "./raycast";
-import { Settings } from "./settingsClass";
+import { Settings } from "./settings";
 
 type DDAFunction = {
   initialPos: Vec2;

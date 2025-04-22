@@ -1,22 +1,22 @@
-export type FlagsType = "UP_KEY" | "DOWN_KEY" | "LEFT_KEY" | "RIGHT_KEY";
+export type ActionsFlags = "UP_KEY" | "DOWN_KEY" | "LEFT_KEY" | "RIGHT_KEY";
 
-export type GenerateInputType = Record<FlagsType, string>;
+export type GenerateInputType = Record<ActionsFlags, string>;
 
 export class InputManager {
-  private _keySet: Set<FlagsType>;
-  private _validKeys: Record<string, FlagsType>;
+  private _keySet: Set<ActionsFlags>;
+  private _validKeys: Record<string, ActionsFlags>;
   private _mouseOffsetX: number;
 
   constructor(input: GenerateInputType) {
-    this._keySet = new Set<FlagsType>();
+    this._keySet = new Set<ActionsFlags>();
 
     this._validKeys = Object.fromEntries(
-      (Object.entries(input) as [string, FlagsType][]).map<[FlagsType, string]>(
-        ([action, key]) => {
-          return [key, action];
-        }
-      )
-    ) as Record<string, FlagsType>;
+      (Object.entries(input) as [string, ActionsFlags][]).map<
+        [ActionsFlags, string]
+      >(([action, key]) => {
+        return [key, action];
+      })
+    ) as Record<string, ActionsFlags>;
 
     this._mouseOffsetX = 0;
   }

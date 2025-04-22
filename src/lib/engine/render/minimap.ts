@@ -1,8 +1,8 @@
-import { colors, RGB } from "./colors";
-import { Paint } from "./paintClass";
-import { RayInfo } from "./raycast";
-import { Settings } from "./settingsClass";
-import { Vec2 } from "./vector";
+import { colorsVector, RGBVector, RGB } from "../colors";
+import { Paint } from "../paint";
+import { RayInfo } from "../raycast";
+import { Settings } from "../settings";
+import { Vec2 } from "../vector";
 
 export class Minimap {
   private _settings: Settings;
@@ -115,7 +115,11 @@ export class Minimap {
           offsetJ - floorOffSetJ,
           offsetI - floorOffSetI
         );
-        this._paint.paintRect(pixelPos, pixelSize, color);
+        this._paint.paintRect(
+          pixelPos,
+          pixelSize,
+          `rgb( ${color[0]} ${color[1]} ${color[2]})`
+        );
       }
     }
   }
@@ -131,10 +135,12 @@ export class Minimap {
     };
   }
 
-  getPixelColor(jPos: number, iPos: number): string {
-    if (jPos > this._settings.map.length - 1 || jPos < 0) return RGB.black;
-    if (iPos < 0 || iPos > this._settings.map[0].length - 1) return RGB.black;
-    return colors[this._settings.map[jPos][iPos]];
+  getPixelColor(jPos: number, iPos: number): number[] {
+    if (jPos > this._settings.map.length - 1 || jPos < 0)
+      return RGBVector.black;
+    if (iPos < 0 || iPos > this._settings.map[0].length - 1)
+      return RGBVector.black;
+    return colorsVector[this._settings.map[jPos][iPos]];
   }
 
   getPixelPos(j: number, i: number, offsetJ: number, offsetI: number): Vec2 {

@@ -22,7 +22,7 @@ export const colors: Record<ColorOptions, string> = {
   7: RGB.yellow,
 };
 
-export const RBGVector = {
+export const RGBVector = {
   black: [0, 0, 0],
   red: [255, 0, 0],
   white: [255, 255, 255],
@@ -34,12 +34,12 @@ export const RBGVector = {
 };
 
 export const colorsVector: Record<ColorOptions, number[]> = {
-  0: RBGVector.black,
-  1: RBGVector.red,
-  2: RBGVector.green,
-  3: RBGVector.blue,
-  4: RBGVector.white,
-  5: RBGVector.cyan,
-  6: RBGVector.magenta,
-  7: RBGVector.yellow,
+  0: RGBVector.black,
+  1: RGBVector.red,
+  2: RGBVector.green,
+  3: RGBVector.blue,
+  4: RGBVector.white,
+  5: RGBVector.cyan,
+  6: RGBVector.magenta,
+  7: RGBVector.yellow,
 };

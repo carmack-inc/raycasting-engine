@@ -1,5 +1,5 @@
+import { ActionsFlags } from "./inputManager";
 import { Settings } from "./settingsClass";
-import { FlagsType } from "./inputClass";
 import { Vector } from "./vector";
 
 export type GeneratePlayerType = {
@@ -35,7 +35,7 @@ export class Player {
     return this._rotateSpeed;
   }
 
-  private actions: Record<FlagsType, Function>;
+  private actions: Record<ActionsFlags, Function>;
 
   constructor(options: GeneratePlayerType, settings: Settings) {
     this._position = options.position;
@@ -47,7 +47,7 @@ export class Player {
     this._settings = settings;
   }
 
-  private createActions(): Record<FlagsType, Function> {
+  createActions(): Record<ActionsFlags, Function> {
     return {
       UP_KEY: () => {
         this._movementVector.x += this._direction.x;
@@ -70,12 +70,12 @@ export class Player {
     };
   }
 
-  update(keyboardSet: Set<FlagsType>, mouseOffsetX: number) {
+  update(keyboardSet: Set<ActionsFlags>, mouseOffsetX: number) {
     this.walk(keyboardSet);
     this.rotate(mouseOffsetX);
   }
 
-  private walk(keyboardSet: Set<FlagsType>) {
+  walk(keyboardSet: Set<ActionsFlags>) {
     const MAP = this._settings.map;
     this._movementVector = { x: 0, y: 0 };
     keyboardSet.forEach((flag) => {
@@ -97,7 +97,7 @@ export class Player {
       this._position.y -= this._movementVector.y * this._walkSpeed; // NEGATIVE Y AXIS IN CANVAS
   }
 
-  private rotate(mouseOffsetX: number) {
+  rotate(mouseOffsetX: number) {
     const oldDir = { x: this._direction.x, y: this._direction.y };
     const rotateAngle =
       -(mouseOffsetX / this._settings.canvasWidth) * this._rotateSpeed;

@@ -1,4 +1,4 @@
-import { Settings } from "./settingsClass";
+import { Settings } from "./settings";
 import { Vec2, Vector } from "./vector";
 
 type DDAFunction = {

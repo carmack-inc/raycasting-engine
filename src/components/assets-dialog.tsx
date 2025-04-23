@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowUpRightIcon, BrickWallIcon, CoinsIcon, DiamondIcon, FlagIcon, HeartPulseIcon, PersonStandingIcon, SkullIcon, SwordIcon } from "lucide-react";
+import { ArrowUpRightIcon, BrickWallIcon, CoinsIcon, DiamondIcon, FlagIcon, HeartPulseIcon, PersonStandingIcon, SkullIcon, SwordIcon, LucideIcon} from "lucide-react";
+
 
 interface CellGroup {
   label: string
@@ -9,8 +10,8 @@ interface CellGroup {
 
 interface CellItem {
   label: string
-  icon: any,
-  class?: string
+  icon: LucideIcon,
+  class?: string,
 }
 
 const essencial: CellItem[] = [
@@ -77,15 +78,12 @@ export function AssetsDialog({ ...props }: React.ComponentProps<typeof Dialog>) 
           <div key={group.label + index}>
             {group.label}
             <div className="flex flex-col gap-2 pt-3">
-              {group.items.map((item, index) => {
-                const Icon = item.icon;
-                return (
-                <Button key={item.label + index} variant="secondary" className="">
-                  <Icon className={item.class + " mr-2"} />
+              {group.items.map((item, index) => (
+                <Button key={item.label + index} variant="secondary">
+                  <item.icon className={item.class + " mr-2"} />
                   {item.label}
                 </Button>
-                ); 
-              })}
+              ))}
             </div>
           </div>
         ))}

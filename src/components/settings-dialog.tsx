@@ -35,7 +35,7 @@ export function SettingsDialog({ ...props }: React.ComponentProps<typeof Dialog>
 
         <span>Atalhos (clique para editar)</span>
         <div className="grid grid-cols-2 gap-6">
-          <div className="flex flex-col gap-3 rounded-2xl border border-gray-850 px-4 py-3">
+          <div className="flex flex-col gap-3 rounded-2xl border px-4 py-3">
             <div className="flex items-center justify-between">
               <span>Andar para frente</span>
               <Button variant="secondary">A</Button>

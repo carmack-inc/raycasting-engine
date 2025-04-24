@@ -4,10 +4,9 @@ import { JoystickIcon } from "lucide-react";
 import Link from 'next/link';
 import type React from "react";
 
-import { NavEntity } from "@/components/nav-entity";
+import { NavEnemies } from "@/components/nav-enemies";
 import { NavEssential } from "@/components/nav-essential";
 import { NavMain } from "@/components/nav-main";
-import { NavObjects } from "@/components/nav-objects";
 import { NavWalls } from "@/components/nav-walls";
 import {
   Sidebar,
@@ -36,8 +35,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain />
         <NavEssential />
-        <NavEntity />
-        <NavObjects />
+        <NavEnemies />
         <NavWalls />
       </SidebarContent>
     </Sidebar>

@@ -1,6 +1,6 @@
 import { RequiredBadge } from "@/components/required-badge";
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { DiamondIcon, FlagIcon, SkullIcon } from "lucide-react";
+import { FlagIcon, PersonStandingIcon, SkullIcon } from "lucide-react";
 
 export function NavEssential() {
   return (
@@ -10,8 +10,8 @@ export function NavEssential() {
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Spawn player">
-            <DiamondIcon />
-            <span>Spawn player</span>
+            <PersonStandingIcon />
+            <span>Player</span>
           </SidebarMenuButton>
           <RequiredBadge />
         </SidebarMenuItem>

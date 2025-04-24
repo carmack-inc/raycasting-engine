@@ -8,12 +8,16 @@ import { ColorOptions } from "@/lib/engine/colors";
 import { useMemo, useState } from "react";
 
 export type Tool = GeneralTool | EssentialTool | EnemyTool | WallTool
-export type GeneralTool = "pointer" | "eraser"
+export type GeneralTool = "pointer" | "pivot" | "eraser"
 export type EssentialTool = "player" | "end" | "death"
 export type EnemyTool = "enemy_gladiator"
 export type WallTool = "wall_blue" | "wall_red" | "wall_green" | "wall_cyan" | "wall_magenta" | "wall_yellow"
 
-export type CellValue = EssentialTool | EnemyTool | WallTool
+export type SpawnPlayer = "player_t" | "player_tr" | "player_tl"
+  | "player_l" | "player_r"
+  | "player_b" | "player_br" | "player_bl"
+
+export type CellValue = Exclude<EssentialTool, "player"> | EnemyTool | WallTool | SpawnPlayer
 export type Map = (CellValue | undefined)[]
 
 const MAP: ColorOptions[][] = [
@@ -51,17 +55,32 @@ function createInitialMap(): Map {
   const example = MAP.flatMap((row) => row.map((cell) => innerToOutieMap[cell]));
 
   // Position the player
-  example[9 * COLUMNS + 3] = "player";
+  example[9 * COLUMNS + 3] = "player_r";
 
   return example;
+}
+
+const PLAYER_POSITIONS: readonly SpawnPlayer[] = [
+  "player_t", "player_tr", "player_r",
+  "player_br", "player_b", "player_bl",
+  "player_l", "player_tl",
+]
+
+export function isPlayerCell(val: CellValue | undefined): val is SpawnPlayer {
+  return val?.startsWith("player_") ?? false
 }
 
 export function MapBuilder() {
   const [activeTool, setActiveTool] = useState<Tool>("pointer");
   const [map, setMap] = useState(createInitialMap);
-  const playerRequired = useMemo(() => !map.includes("player"), [map])
+  const playerRequired = useMemo(
+    () => map.findIndex((cell) => isPlayerCell(cell)) == -1,
+    [map],
+  );
 
   function updateCell(index: number) {
+    const cell = map[index];
+
     if (activeTool === "pointer") {
       return;
     }
@@ -71,8 +90,19 @@ export function MapBuilder() {
       return;
     }
 
-    if (activeTool === "player" && playerRequired) {
-      setMap((map) => map.with(index, "player"));
+    if (activeTool === "pivot") {
+      if (isPlayerCell(cell)) {
+        const current = PLAYER_POSITIONS.indexOf(cell)
+        const next = PLAYER_POSITIONS[(current + 1) % PLAYER_POSITIONS.length]
+
+        setMap((map) => map.with(index, next))
+      }
+
+      return;
+    }
+
+    if (activeTool === "player") {
+      setMap((map) => map.with(index, "player_r"));
       setActiveTool("pointer");
       return;
     }

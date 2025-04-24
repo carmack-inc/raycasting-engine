@@ -1,6 +1,6 @@
 "use client";
 
-import { CellValue, Map } from "@/components/map/map-builder";
+import { CellValue, Map, SpawnPlayer } from "@/components/map/map-builder";
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
 import { InputManager } from "@/lib/engine/inputManager";
@@ -9,6 +9,7 @@ import { CanvasPaint } from "@/lib/engine/paint";
 import { Player } from "@/lib/engine/player";
 import { Renderer } from "@/lib/engine/render/renderer";
 import { Settings } from "@/lib/engine/settings";
+import { Vec2 } from "@/lib/engine/vector";
 import { useEffect, useMemo, useRef } from "react";
 
 const MAP: ColorOptions[][] = [
@@ -55,6 +56,17 @@ const outieToInnerMap: Partial<Record<CellValue, ColorOptions>> = {
   wall_yellow: 7,
 }
 
+const playerPosMapping: Record<SpawnPlayer, Vec2> = {
+  player_l: { x: -1, y: 0 },
+  player_tl: { x: -1, y: 1 },
+  player_t: { x: 0, y: 1 },
+  player_tr: { x: 1, y: 1 },
+  player_r: { x: 1, y: 0 },
+  player_br: { x: 1, y: -1 },
+  player_b: { x: 0, y: -1 },
+  player_bl: { x: -1, y: -1 }
+}
+
 export function Game({ map, columns }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineMap = useMemo(() => {
@@ -67,10 +79,15 @@ export function Game({ map, columns }: GameProps) {
 
     return innerMap;
   }, [map, columns]);
-  const spawn = useMemo(() => {
-    const index = map.indexOf("player");
 
-    return { x: index % columns, y: Math.floor(index / columns) }
+  const mapPlayer = useMemo(() => {
+    const index = map.findIndex((cell) => cell?.startsWith("player_"));
+    const player = map[index] as SpawnPlayer
+
+    return {
+      position: { x: index % columns, y: Math.floor(index / columns) },
+      direction: playerPosMapping[player],
+    };
   }, [map, columns])
 
   useEffect(() => {
@@ -127,8 +144,8 @@ export function Game({ map, columns }: GameProps) {
 
     const player = new Player(
       {
-        position: { x: spawn.x, y: spawn.y },
-        direction: { x: DIRECTION.x, y: DIRECTION.y },
+        position: { x: mapPlayer.position.x, y: mapPlayer.position.y },
+        direction: { x: mapPlayer.direction.x, y: mapPlayer.direction.y },
         rotateSpeed: ROTATE_SPEED,
         walkSpeed: WALK_SPEED,
       },

@@ -9,7 +9,7 @@ export function NavEssential() {
 
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Spawn player">
+          <SidebarMenuButton tooltip="Player">
             <PersonStandingIcon />
             <span>Player</span>
           </SidebarMenuButton>

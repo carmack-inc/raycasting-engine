@@ -7,6 +7,7 @@ import type React from "react";
 import { NavEnemies } from "@/components/nav-enemies";
 import { NavEssential } from "@/components/nav-essential";
 import { NavMain } from "@/components/nav-main";
+import { NavTools } from "@/components/nav-tools";
 import { NavWalls } from "@/components/nav-walls";
 import {
   Sidebar,
@@ -34,6 +35,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
+        <NavTools />
         <NavEssential />
         <NavEnemies />
         <NavWalls />

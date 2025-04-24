@@ -3,20 +3,24 @@ import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, Sideba
 import { RadioGroupItem } from "@radix-ui/react-radio-group";
 import { FlagIcon, PersonStandingIcon, SkullIcon } from "lucide-react";
 
-export function NavEssential() {
+interface NavEssentialProps {
+  playerRequired: boolean
+}
+
+export function NavEssential({ playerRequired }: NavEssentialProps) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Essential</SidebarGroupLabel>
 
       <SidebarMenu>
         <SidebarMenuItem>
-          <RadioGroupItem value="player" asChild>
+          <RadioGroupItem value="player" disabled={!playerRequired} asChild>
             <SidebarMenuButton tooltip="Player">
               <PersonStandingIcon />
               <span>Player</span>
             </SidebarMenuButton>
           </RadioGroupItem>
-          <RequiredBadge />
+          {playerRequired && <RequiredBadge />}
         </SidebarMenuItem>
 
         <SidebarMenuItem>

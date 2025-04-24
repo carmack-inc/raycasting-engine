@@ -4,7 +4,7 @@ import { Header } from "@/app/engine/header";
 import { MapContent } from "@/components/map/map-content";
 import { MapSidebar } from "@/components/map/map-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export type Tool = GeneralTool | EssentialTool | EnemyTool | WallTool
 export type GeneralTool = "pointer" | "eraser"
@@ -24,10 +24,7 @@ function createInitialMap() {
 export function MapBuilder() {
   const [activeTool, setActiveTool] = useState<Tool>("pointer");
   const [map, setMap] = useState(createInitialMap);
-
-  // const handleCellChange = useCallback((value: CellValue | undefined, index: number) => {
-  //   setMap((map) => map.with(index, value))
-  // }, [])
+  const playerRequired = useMemo(() => !map.includes("player"), [map])
 
   function updateCell(index: number) {
     if (activeTool === "pointer") {
@@ -39,12 +36,22 @@ export function MapBuilder() {
       return;
     }
 
+    if (activeTool === "player" && playerRequired) {
+      setMap((map) => map.with(index, "player"));
+      setActiveTool("pointer");
+      return;
+    }
+
     setMap((map) => map.with(index, activeTool));
   }
 
   return (
     <SidebarProvider>
-      <MapSidebar tool={activeTool} onToolChange={setActiveTool} />
+      <MapSidebar
+        tool={activeTool}
+        playerRequired={playerRequired}
+        onToolChange={setActiveTool}
+      />
       <SidebarInset className="min-w-0 [--navbar-height:theme(spacing.12)]">
         <Header />
         <MapContent

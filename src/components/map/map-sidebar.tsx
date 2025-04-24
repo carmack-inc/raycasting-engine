@@ -22,10 +22,11 @@ import type { Tool } from "@/components/map/map-builder";
 
 type MapSidebarProps = React.ComponentProps<typeof Sidebar> & {
   tool: Tool;
+  playerRequired: boolean;
   onToolChange: (tool: Tool) => void;
 }
 
-export function MapSidebar({ tool, onToolChange, ...props }: MapSidebarProps) {
+export function MapSidebar({ tool, playerRequired, onToolChange, ...props }: MapSidebarProps) {
   return (
     <Sidebar variant="inset" collapsible="icon" {...props}>
       <SidebarHeader>
@@ -49,7 +50,7 @@ export function MapSidebar({ tool, onToolChange, ...props }: MapSidebarProps) {
           onValueChange={onToolChange}
         >
           <NavTools />
-          <NavEssential />
+          <NavEssential playerRequired={playerRequired} />
           <NavEnemies />
           <NavWalls />
         </RadioGroup>

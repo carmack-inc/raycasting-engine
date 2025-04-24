@@ -53,8 +53,8 @@ export function Game() {
           await canvas.requestPointerLock({
             unadjustedMovement: true,
           });
-        } catch (error: any) {
-          if (error.name === "NotSupportedError") {
+        } catch (error) {
+          if (error instanceof Error && error.name === "NotSupportedError") {
             await canvas.requestPointerLock();
           } else {
             throw error;

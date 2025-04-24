@@ -40,11 +40,11 @@ export class CanvasPaint implements Paint {
   }
 
   paintBuffer(buffer: number[]) {
-    let imageData = this._ctx.createImageData(
+    const imageData = this._ctx.createImageData(
       this._canvas.width,
       this._canvas.height
     );
-    let bufferData = imageData.data;
+    const bufferData = imageData.data;
     for (let i = 0; i < this._canvas.height * this._canvas.width; i++) {
       const index = i * 4;
       bufferData[index] = buffer[index]; // R

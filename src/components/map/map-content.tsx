@@ -1,12 +1,12 @@
 "use client";
 
-import { CellValue } from "@/components/map/map-builder";
+import { CellValue, Map } from "@/components/map/map-builder";
 import { MapCell } from "@/components/map/map-cell";
 import { MapControls } from "@/components/map/map-controls";
 import { useState } from "react";
 
 interface MapContentProps {
-  map: (CellValue | undefined)[];
+  map: Map;
   columns: number;
   onCellClick: (index: number) => void;
 }

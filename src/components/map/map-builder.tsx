@@ -4,6 +4,7 @@ import { Header } from "@/app/engine/header";
 import { MapContent } from "@/components/map/map-content";
 import { MapSidebar } from "@/components/map/map-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { ColorOptions } from "@/lib/engine/colors";
 import { useMemo, useState } from "react";
 
 export type Tool = GeneralTool | EssentialTool | EnemyTool | WallTool
@@ -13,12 +14,46 @@ export type EnemyTool = "enemy_gladiator"
 export type WallTool = "wall_blue" | "wall_red" | "wall_green" | "wall_cyan" | "wall_magenta" | "wall_yellow"
 
 export type CellValue = EssentialTool | EnemyTool | WallTool
+export type Map = (CellValue | undefined)[]
 
-const COLUMNS = 25;
-const ROWS = 25;
+const MAP: ColorOptions[][] = [
+  [0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 7, 0, 2],
+  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [0, 1, 1, 1, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+];
 
-function createInitialMap() {
-  return Array.from<CellValue | undefined>({ length: ROWS * COLUMNS })
+const COLUMNS = MAP[0].length;
+const ROWS = MAP.length;
+
+const innerToOutieMap: Record<ColorOptions, CellValue | undefined> = {
+  0: undefined,
+  1: "wall_red",
+  2: "wall_green",
+  3: "wall_blue",
+  4: undefined,
+  5: "wall_cyan",
+  6: "wall_magenta",
+  7: "wall_yellow",
+}
+
+function createInitialMap(): Map {
+  // return Array.from<CellValue | undefined>({ length: ROWS * COLUMNS })
+
+  const example = MAP.flatMap((row) => row.map((cell) => innerToOutieMap[cell]));
+
+  // Position the player
+  example[9 * COLUMNS + 3] = "player";
+
+  return example;
 }
 
 export function MapBuilder() {

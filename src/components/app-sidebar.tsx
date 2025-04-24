@@ -9,6 +9,8 @@ import { NavEssential } from "@/components/nav-essential";
 import { NavMain } from "@/components/nav-main";
 import { NavObjects } from "@/components/nav-objects";
 import { NavWalls } from "@/components/nav-walls";
+import { NavFloor } from "@/components/nav-floor";
+import { NavCeiling } from "@/components/nav-ceiling";
 import {
   Sidebar,
   SidebarContent,
@@ -39,6 +41,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavEntity />
         <NavObjects />
         <NavWalls />
+        <NavFloor />
+        <NavCeiling />
       </SidebarContent>
     </Sidebar>
   )

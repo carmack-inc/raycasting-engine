@@ -115,7 +115,7 @@ export class RayCast {
   }
 
   findSidesSize(rayDir: Vec2, pos: Vec2, mapPos: Vec2): Vec2 {
-    let sideDist = { x: 0, y: 0 };
+    const sideDist = { x: 0, y: 0 };
 
     if (rayDir.x > 0) {
       sideDist.x = mapPos.x + 1 - pos.x;

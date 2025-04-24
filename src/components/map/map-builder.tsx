@@ -1,21 +1,16 @@
 import { Header } from "@/app/engine/header";
 import { AppSidebar } from "@/components/app-sidebar";
+import { MapContent } from "@/components/map/map-content";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import React from 'react';
 
-type EngineLayoutProps = Readonly<{
-  children: React.ReactNode
-}>
-
-export default function EngineLayout({ children }: EngineLayoutProps) {
+export function MapBuilder() {
   return (
-    
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="min-w-0 [--navbar-height:theme(spacing.12)]">
         <Header />
-        <div>{children}</div>
+        <MapContent />
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }

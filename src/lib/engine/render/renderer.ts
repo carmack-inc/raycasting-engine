@@ -1,3 +1,4 @@
+import { Entity } from "@/lib/engine/render/entity";
 import { Paint } from "../paint";
 import { Player } from "../player";
 import { RayCast } from "../raycast";
@@ -16,6 +17,7 @@ export class Renderer {
   private _floor: Renderable;
   private _ceil: Renderable;
   private _wall: Renderable;
+  private _entity: Renderable;
   private _buffer: number[];
   public get buffer(): number[] {
     return this._buffer;
@@ -29,6 +31,7 @@ export class Renderer {
     this._floor = new Floor(settings);
     this._ceil = new Ceil(settings);
     this._wall = new Wall(settings);
+    this._entity = new Entity(settings)
     this._buffer = [];
     this.resetBuffer();
   }
@@ -54,6 +57,7 @@ export class Renderer {
     this._floor.render(player, raysInfo, this.buffer);
     this._ceil.render(player, raysInfo, this.buffer);
     this._wall.render(player, raysInfo, this.buffer);
+    this._entity.render(player, raysInfo, this.buffer);
     this._paint.paintBuffer(this.buffer);
     this._minimap.renderMinimap(player.position, raysInfo);
   }

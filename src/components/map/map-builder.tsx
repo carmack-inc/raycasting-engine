@@ -88,7 +88,11 @@ export function MapBuilder() {
         onToolChange={setActiveTool}
       />
       <SidebarInset className="min-w-0 [--navbar-height:theme(spacing.12)]">
-        <Header gameDisabled={playerRequired} />
+        <Header
+          gameDisabled={playerRequired}
+          map={map}
+          columns={COLUMNS}
+        />
         <MapContent
           map={map}
           columns={COLUMNS}

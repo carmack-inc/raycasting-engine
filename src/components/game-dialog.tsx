@@ -1,7 +1,7 @@
 "use client";
 
 import { PlayIcon } from "lucide-react"
-import { Game } from "./game"
+import { Game, GameProps } from "./game"
 import { Button } from "./ui/button"
 import {
   Dialog,
@@ -11,11 +11,11 @@ import {
   DialogTrigger
 } from "./ui/dialog"
 
-interface GameDialogProps {
+type GameDialogProps = GameProps & {
   disabled?: boolean
 }
 
-export function GameDialog({ disabled }: GameDialogProps) {
+export function GameDialog({ disabled, ...gameProps }: GameDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -28,7 +28,7 @@ export function GameDialog({ disabled }: GameDialogProps) {
         <DialogHeader>
           <DialogTitle>Raycasting Game</DialogTitle>
         </DialogHeader>
-        <Game />
+        <Game {...gameProps} />
       </DialogContent>
     </Dialog>
   );

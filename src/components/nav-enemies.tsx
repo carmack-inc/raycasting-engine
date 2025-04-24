@@ -1,4 +1,5 @@
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import { RadioGroupItem } from "@radix-ui/react-radio-group";
 import { SwordIcon } from "lucide-react";
 
 export function NavEnemies() {
@@ -8,10 +9,12 @@ export function NavEnemies() {
 
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Gladiator">
-            <SwordIcon />
-            <span>Gladiator</span>
-          </SidebarMenuButton>
+          <RadioGroupItem value="enemy_gladiator" asChild>
+            <SidebarMenuButton tooltip="Gladiator">
+              <SwordIcon />
+              <span>Gladiator</span>
+            </SidebarMenuButton>
+          </RadioGroupItem>
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>

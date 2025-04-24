@@ -14,7 +14,7 @@ export function NavEssential({ playerRequired }: NavEssentialProps) {
 
       <SidebarMenu>
         <SidebarMenuItem>
-          <RadioGroupItem value="player" disabled={!playerRequired} asChild>
+          <RadioGroupItem value="player" asChild>
             <SidebarMenuButton tooltip="Player">
               <PersonStandingIcon />
               <span>Player</span>

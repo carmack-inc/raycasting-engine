@@ -9,6 +9,7 @@ type EngineLayoutProps = Readonly<{
 
 export default function EngineLayout({ children }: EngineLayoutProps) {
   return (
+    
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="min-w-0 [--navbar-height:theme(spacing.12)]">

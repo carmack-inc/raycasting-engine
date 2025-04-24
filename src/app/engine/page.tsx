@@ -1,4 +1,4 @@
-import { MapContent } from "@/app/engine/map"
+import { MapContent } from "@/components/map/map-content";
 
 export default function Engine() {
   return <MapContent />

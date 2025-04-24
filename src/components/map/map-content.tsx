@@ -1,23 +1,18 @@
 "use client";
 
-import { CellValue, MapCell } from "@/components/map/map-cell";
+import { CellValue } from "@/components/map/map-builder";
+import { MapCell } from "@/components/map/map-cell";
 import { MapControls } from "@/components/map/map-controls";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
-const COLUMNS = 25;
-const ROWS = 25;
-
-function createInitialMap() {
-  return Array.from<CellValue | undefined>({ length: ROWS * COLUMNS })
+interface MapContentProps {
+  map: (CellValue | undefined)[];
+  columns: number;
+  onCellClick: (index: number) => void;
 }
 
-export function MapContent() {
+export function MapContent({ map, columns, onCellClick }: MapContentProps) {
   const [zoom, setZoom] = useState(7);
-  const [map, setMap] = useState(createInitialMap)
-
-  const handleCellChange = useCallback((value: CellValue | undefined, index: number) => {
-    setMap((map) => map.with(index, value))
-  }, [])
 
   return (
     <div className="w-full h-[calc(100svh-var(--navbar-height)-theme(spacing.4))] overflow-auto relative">
@@ -25,7 +20,7 @@ export function MapContent() {
         <div
           className="grid grid-cols-[repeat(var(--columns),var(--cell-size))] [--cell-size:calc(var(--zoom)*theme(spacing.1))] border border-input"
           style={{ 
-            "--columns": COLUMNS,
+            "--columns": columns,
             "--zoom": zoom,
           } as React.CSSProperties}
         >
@@ -34,7 +29,7 @@ export function MapContent() {
               key={idx}
               id={idx}
               value={value}
-              onValueChange={handleCellChange}
+              onClick={() => onCellClick(idx)}
             />
           ))}
         </div>

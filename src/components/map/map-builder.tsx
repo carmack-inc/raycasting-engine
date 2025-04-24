@@ -7,20 +7,51 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useState } from "react";
 
 export type Tool = GeneralTool | EssentialTool | EnemyTool | WallTool
-type GeneralTool = "pointer" | "eraser"
-type EssentialTool = "player" | "end" | "death"
-type EnemyTool = "enemy_gladiator"
-type WallTool = "wall_blue" | "wall_red" | "wall_green"
+export type GeneralTool = "pointer" | "eraser"
+export type EssentialTool = "player" | "end" | "death"
+export type EnemyTool = "enemy_gladiator"
+export type WallTool = "wall_blue" | "wall_red" | "wall_green" | "wall_cyan" | "wall_magenta" | "wall_yellow"
+
+export type CellValue = EssentialTool | EnemyTool | WallTool
+
+const COLUMNS = 25;
+const ROWS = 25;
+
+function createInitialMap() {
+  return Array.from<CellValue | undefined>({ length: ROWS * COLUMNS })
+}
 
 export function MapBuilder() {
   const [activeTool, setActiveTool] = useState<Tool>("pointer");
+  const [map, setMap] = useState(createInitialMap);
+
+  // const handleCellChange = useCallback((value: CellValue | undefined, index: number) => {
+  //   setMap((map) => map.with(index, value))
+  // }, [])
+
+  function updateCell(index: number) {
+    if (activeTool === "pointer") {
+      return;
+    }
+
+    if (activeTool === "eraser") {
+      setMap((map) => map.with(index, undefined));
+      return;
+    }
+
+    setMap((map) => map.with(index, activeTool));
+  }
 
   return (
     <SidebarProvider>
       <MapSidebar tool={activeTool} onToolChange={setActiveTool} />
       <SidebarInset className="min-w-0 [--navbar-height:theme(spacing.12)]">
         <Header />
-        <MapContent />
+        <MapContent
+          map={map}
+          columns={COLUMNS}
+          onCellClick={updateCell}
+        />
       </SidebarInset>
     </SidebarProvider>
   );

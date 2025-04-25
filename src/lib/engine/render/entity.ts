@@ -1,36 +1,34 @@
+import { EnemyType, GameStates } from "@/lib/engine/gameState";
 import { Player } from "@/lib/engine/player";
 import { RayInfo } from "@/lib/engine/raycast";
 import { Renderable } from "@/lib/engine/render/renderable";
 import { Settings } from "@/lib/engine/settings";
 import { Vec2, Vector } from "@/lib/engine/vector";
 
-type spriteInfo = {
-  position: Vec2,
-  texture : 1 | 2
-}
 export class Entity extends Renderable{
-  private sprites: spriteInfo[] ;
+  //private sprites: spriteInfo[] ;
 
   constructor(settings: Settings){
     super(settings);
-    this.sprites = [{position:{x: 10 , y: 9}, texture: 1}, {position:{x: 10 , y: 3}, texture: 2}];
+    //this.sprites = [{position:{x: 10 , y: 9}, texture: 1}, {position:{x: 10 , y: 3}, texture: 2}];
   }
-  render(player: Player, rays: RayInfo[], buffer: number[]): void {
-    this.sprites.sort((a,b)=>{
-      const playerPos = player.position
+  render(gameState: GameStates, rays: RayInfo[], buffer: number[]): void {
+    
+    gameState.enemies.sort((a,b)=>{
+      const playerPos = gameState.player.position
       const distA = ((playerPos.x - a.position.x) * (playerPos.x - a.position.x) + (playerPos.y - a.position.y) * (playerPos.y - a.position.y));
       const distB = ((playerPos.x - b.position.x) * (playerPos.x - b.position.x) + (playerPos.y - b.position.y) * (playerPos.y - b.position.y));
 
       return distB - distA // reverse order
     })
-    for(let i = 0; i< this.sprites.length; i++){
-      this.renderSprite(this.sprites[i], player, rays, buffer);
+    for(let i = 0; i< gameState.enemies.length; i++){
+      this.renderSprite(gameState.enemies[i], gameState, rays, buffer);
     }
   }
 
-  renderSprite(sprite: spriteInfo, player: Player, rays: RayInfo[], buffer: number[]){
-    const spritePositionCamera = this.translateSpritePosition(sprite.position, player)
-    const transform = this.worldToCameraTransform(spritePositionCamera, player)
+  renderSprite(enemy: EnemyType, gameState: GameStates, rays: RayInfo[], buffer: number[]){
+    const spritePositionCamera = this.translateSpritePosition(enemy.position, gameState.player.position);
+    const transform = this.worldToCameraTransform(spritePositionCamera, gameState.player.direction)
     if(transform.y == 0) return;
 
     const spriteWidthCenter = this.calculateCenterOfSprite(transform)
@@ -43,7 +41,7 @@ export class Entity extends Renderable{
         transform.y < rays[x].perpDist)
       for(let y = height.start; y < height.end; y++) 
       {
-        if(sprite.texture == 1){
+        if(enemy.texture == "Square"){
           this.setPixelBuffer(buffer, {x, y},{r:255 ,g:0 ,b:255,a:255})
         } else {
           const radius = Math.abs(Math.floor((this.settings.canvasHeight / 2)/ transform.y))
@@ -65,18 +63,18 @@ export class Entity extends Renderable{
 
   // RENAME THAT FUNCTION
 
-  translateSpritePosition(spritePosition: Vec2, player: Player){
+  translateSpritePosition(spritePosition: Vec2, playerPosition: Vec2){
     return  {
-      x:spritePosition.x - player.position.x,
-      y:spritePosition.y - player.position.y,
+      x:spritePosition.x - playerPosition.x,
+      y:spritePosition.y - playerPosition.y,
     }
   }
 
-  worldToCameraTransform(spritePos: Vec2, player: Player): Vec2{
-    const plane = Vector.findPerpVector(player.direction)
-    const invDet = 1 / ((-plane.x) * (-player.direction.y) - player.direction.x * plane.y); 
+  worldToCameraTransform(spritePos: Vec2, playerDirection: Vec2): Vec2{
+    const plane = Vector.findPerpVector(playerDirection)
+    const invDet = 1 / ((-plane.x) * (-playerDirection.y) - playerDirection.x * plane.y); 
     return {
-        x: invDet * ((-player.direction.y) * spritePos.x - player.direction.x * spritePos.y),
+        x: invDet * ((-playerDirection.y) * spritePos.x - playerDirection.x * spritePos.y),
         y: invDet * (-plane.y * spritePos.x + (-plane.x) * spritePos.y)
     }
   }

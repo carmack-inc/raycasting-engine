@@ -1,23 +1,37 @@
-import { Enemy } from "@/lib/engine/enemy";
+import { Enemy, TextureType } from "@/lib/engine/enemy";
 import { ActionsFlags } from "@/lib/engine/inputManager";
 import { Player } from "@/lib/engine/player";
-import { Settings } from "@/lib/engine/settings";
+import { Vec2 } from "@/lib/engine/vector";
+
+
+export type EnemyType = {
+  position: Vec2,
+  texture: TextureType,
+}
+export type GameStates = {
+  game:{
+    state: "running" | "lose" | "win";
+  },
+  player: {
+    position: Vec2,
+    direction: Vec2,
+  },
+  enemies: EnemyType[]
+}
 
 export class GameState{
   private _player: Player;
   private _enemies: Enemy[];
-  private _settings: Settings;
 
-  constructor(player:Player, enemies: Enemy[], settings: Settings){
+  constructor(player:Player, enemies: Enemy[]){
     this._player = player;
     this._enemies = enemies;
-    this._settings = settings;
   }
 
-  execute(keyboardSet: Set<ActionsFlags>, mouseMovement: number){
+  update(keyboardSet: Set<ActionsFlags>, mouseMovement: number): GameStates{
     this._player.update(keyboardSet, mouseMovement);
     this._enemies.forEach(enemy => {
-      enemy.update(keyboardSet, mouseMovement)
+      enemy.update(this._player.position)
     })
 
     const enemiesPos = this._enemies.map(enemy => {
@@ -25,12 +39,13 @@ export class GameState{
         position:{
           x: enemy.position.x,
           y: enemy.position.y
-        }
+        },
+        texture: enemy.texture
       }
     })
 
     return {
-      game:{
+      game: {
         state: "running",
       },
       player:{

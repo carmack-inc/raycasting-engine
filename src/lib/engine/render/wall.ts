@@ -3,13 +3,14 @@ import { Settings } from "../settings";
 import { Renderable } from "./renderable";
 import { colorsVector } from "../colors";
 import { RayInfo } from "../raycast";
+import { GameState, GameStates } from "@/lib/engine/gameState";
 
 export class Wall extends Renderable {
   constructor(settings: Settings) {
     super(settings);
   }
 
-  render(player: Player, rays: RayInfo[], buffer: number[]) {
+  render(gameState: GameStates, rays: RayInfo[], buffer: number[]) {
     const MAP = this.settings.map;
     for (let x = 0; x < rays.length; x++) {
       const { lineStart, lineEnd } = this.calculteLineHeight(rays[x].perpDist);

@@ -2,6 +2,7 @@
 
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
+import { Enemy } from "@/lib/engine/enemy";
 import { InputManager } from "@/lib/engine/inputManager";
 import { CanvasPaint } from "@/lib/engine/paint";
 
@@ -107,8 +108,11 @@ export function Game() {
 
     const canvasPaint = new CanvasPaint(canvas);
 
+    const enemy1 = new Enemy({position:{x: 10 , y: 9}, texture: "Square"}, settings)
+    const enemy2 = new Enemy({position:{x: 10 , y: 3}, texture: "Circle"}, settings)
+
     const renderer = new Renderer(settings, canvasPaint);
-    const core = new Core(player, input, renderer);
+    const core = new Core(player, [enemy1, enemy2], input, renderer);
     core.start();
 
     //start(canvas);

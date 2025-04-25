@@ -1,18 +1,13 @@
-import { ActionsFlags } from "./inputManager";
 import { Settings } from "./settings";
-import { Vector } from "./vector";
+import { Vec2, Vector } from "./vector";
 
-export type GeneratePlayerType = {
+export type TextureType = "Square" | "Circle"
+export type GenerateEnemyType = {
   position: {
     x: number;
     y: number;
   };
-  direction: {
-    x: number;
-    y: number;
-  };
-  walkSpeed: number;
-  rotateSpeed: number;
+  texture: TextureType;
 };
 
 export class Enemy {
@@ -21,66 +16,35 @@ export class Enemy {
   public get position(): { x: number; y: number } {
     return this._position;
   }
-  private _direction: { x: number; y: number };
-  public get direction(): { x: number; y: number } {
-    return this._direction;
-  }
   private _movementVector: { x: number; y: number };
   private _walkSpeed: number;
   public get walkSpeed(): number {
     return this._walkSpeed;
   }
-  private _rotateSpeed: number;
-  public get rotateSpeed(): number {
-    return this._rotateSpeed;
+  private _texture: TextureType;
+  public get texture(): TextureType {
+    return this._texture;
   }
 
-  private actions: Record<ActionsFlags, Function>;
-
-  constructor(options: GeneratePlayerType, settings: Settings) {
+  constructor(options: GenerateEnemyType, settings: Settings) {
     this._position = options.position;
-    this._direction = options.direction;
-    this._walkSpeed = options.walkSpeed;
-    this._rotateSpeed = options.rotateSpeed;
+    this._walkSpeed = 0.01;
     this._movementVector = { x: 0, y: 0 };
-    this.actions = this.createActions();
     this._settings = settings;
+    this._texture = options.texture;
   }
 
-  createActions(): Record<ActionsFlags, Function> {
-    return {
-      UP_KEY: () => {
-        this._movementVector.x += this._direction.x;
-        this._movementVector.y += this._direction.y;
-      },
-      DOWN_KEY: () => {
-        this._movementVector.x -= this._direction.x;
-        this._movementVector.y -= this._direction.y;
-      },
-      LEFT_KEY: () => {
-        const towardVec = Vector.findPerpVector(this._direction);
-        this._movementVector.x += towardVec.x;
-        this._movementVector.y += towardVec.y;
-      },
-      RIGHT_KEY: () => {
-        const towardVec = Vector.findPerpVector(this._direction);
-        this._movementVector.x -= towardVec.x;
-        this._movementVector.y -= towardVec.y;
-      },
-    };
+  update(playerPosition: Vec2) {
+    this.walk(playerPosition);
   }
 
-  update(keyboardSet: Set<ActionsFlags>, mouseOffsetX: number) {
-    this.walk(keyboardSet);
-    this.rotate(mouseOffsetX);
-  }
-
-  walk(keyboardSet: Set<ActionsFlags>) {
+  walk(playerPosition: Vec2) {
     const MAP = this._settings.map;
-    this._movementVector = { x: 0, y: 0 };
-    keyboardSet.forEach((flag) => {
-      this.actions[flag]();
-    });
+    const mov = {
+      x: playerPosition.x - this._position.x,
+      y: -(playerPosition.y - this._position.y)
+    }
+    this._movementVector = Vector.normalizeVector(mov)
 
     if (
       MAP[Math.floor(this._position.y)][
@@ -95,18 +59,5 @@ export class Enemy {
       ][Math.floor(this._position.x)] == 0
     )
       this._position.y -= this._movementVector.y * this._walkSpeed; // NEGATIVE Y AXIS IN CANVAS
-  }
-
-  rotate(mouseOffsetX: number) {
-    const oldDir = { x: this._direction.x, y: this._direction.y };
-    const rotateAngle =
-      -(mouseOffsetX / this._settings.canvasWidth) * this._rotateSpeed;
-
-    this._direction.x =
-      this._direction.x * Math.cos(rotateAngle) -
-      this.direction.y * Math.sin(rotateAngle);
-    this._direction.y =
-      oldDir.x * Math.sin(rotateAngle) +
-      this._direction.y * Math.cos(rotateAngle);
   }
 }

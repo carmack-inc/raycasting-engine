@@ -14,7 +14,11 @@ export class Wall extends Renderable {
     for (let x = 0; x < rays.length; x++) {
       const { lineStart, lineEnd } = this.calculteLineHeight(rays[x].perpDist);
 
-      const color = colorsVector[MAP[rays[x].mapHit.y][rays[x].mapHit.x]];
+       let color = colorsVector[0]
+       if(!this.isCellOutOfBounds(rays[x].mapHit)){
+        color = colorsVector[MAP[rays[x].mapHit.y][rays[x].mapHit.x]];
+       }
+       
 
       for (let y = lineStart; y <= lineEnd; y++) {
         this.setPixelBuffer(

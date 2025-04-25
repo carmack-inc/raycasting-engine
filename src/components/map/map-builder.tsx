@@ -8,7 +8,7 @@ import { ColorOptions } from "@/lib/engine/colors";
 import { useMemo, useState } from "react";
 
 export type Tool = GeneralTool | EssentialTool | EnemyTool | WallTool
-export type GeneralTool = "pointer" | "pivot" | "eraser"
+export type GeneralTool = "hand" | "pivot" | "eraser"
 export type EssentialTool = "player" | "end" | "death"
 export type EnemyTool = "enemy_gladiator"
 export type WallTool = "wall_blue" | "wall_red" | "wall_green" | "wall_cyan" | "wall_magenta" | "wall_yellow"
@@ -71,7 +71,7 @@ export function isPlayerCell(val: CellValue | undefined): val is SpawnPlayer {
 }
 
 export function MapBuilder() {
-  const [activeTool, setActiveTool] = useState<Tool>("pointer");
+  const [activeTool, setActiveTool] = useState<Tool>("hand");
   const [map, setMap] = useState(createInitialMap);
   const playerRequired = useMemo(
     () => map.findIndex((cell) => isPlayerCell(cell)) == -1,
@@ -81,7 +81,7 @@ export function MapBuilder() {
   function updateCell(index: number) {
     const cell = map[index];
 
-    if (activeTool === "pointer") {
+    if (activeTool === "hand") {
       return;
     }
 
@@ -102,8 +102,16 @@ export function MapBuilder() {
     }
 
     if (activeTool === "player") {
-      setMap((map) => map.with(index, "player_r"));
-      setActiveTool("pointer");
+      // Check if there's an existing player and move it if it's the case.
+      const existingPlayerIndex = map.findIndex((cell) => isPlayerCell(cell));
+      
+      if (existingPlayerIndex >= 0) {
+        const existingPlayer = map[existingPlayerIndex];
+        setMap((map) => map.with(existingPlayerIndex, undefined).with(index, existingPlayer))
+      } else {
+        setMap((map) => map.with(index, "player_r"));
+      }
+
       return;
     }
 
@@ -123,11 +131,17 @@ export function MapBuilder() {
           map={map}
           columns={COLUMNS}
         />
-        <MapContent
-          map={map}
-          columns={COLUMNS}
-          onCellClick={updateCell}
-        />
+        <div
+          className="data-[tool=hand]:cursor-grab active:data-[tool=hand]:cursor-grabbing"
+          data-tool={activeTool}
+        >
+          <MapContent
+            map={map}
+            zoomDisabled={activeTool !== "hand"}
+            columns={COLUMNS}
+            onCellClick={updateCell}
+          />
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

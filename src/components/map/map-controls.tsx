@@ -4,19 +4,18 @@ import { Button } from "@/components/ui/button";
 import { ZoomInIcon, ZoomOutIcon } from "lucide-react";
 
 interface MapControlsProps {
-  zoom: number
-  onZoomChange: (zoom: number) => void
+  canZoomIn: boolean;
+  canZoomOut: boolean;
+  onZoomInClick: () => void;
+  onZoomOutClick: () => void;
 }
 
-export function MapControls({ zoom, onZoomChange }: MapControlsProps) {
-  function handleZoomOut() {
-    onZoomChange(Math.max(zoom - 1, 4))
-  }
-
-  function handleZoomIn() {
-    onZoomChange(Math.min(zoom + 1, 10))
-  }
-
+export function MapControls({ 
+  canZoomIn, 
+  canZoomOut, 
+  onZoomInClick, 
+  onZoomOutClick 
+}: MapControlsProps) {
   return (
     <div className="fixed z-10 right-6 bottom-6 -space-x-px">
       <Button
@@ -24,8 +23,8 @@ export function MapControls({ zoom, onZoomChange }: MapControlsProps) {
         size="icon"
         variant="outline"
         aria-label="Zoom out"
-        disabled={zoom === 4}
-        onClick={handleZoomOut}
+        disabled={!canZoomOut}
+        onClick={onZoomOutClick}
       >
         <ZoomOutIcon />
       </Button>
@@ -34,8 +33,8 @@ export function MapControls({ zoom, onZoomChange }: MapControlsProps) {
         size="icon"
         variant="outline"
         aria-label="Zoom in"
-        disabled={zoom === 10}
-        onClick={handleZoomIn}
+        disabled={!canZoomIn}
+        onClick={onZoomInClick}
       >
         <ZoomInIcon />
       </Button>

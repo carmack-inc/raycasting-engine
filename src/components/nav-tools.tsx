@@ -1,6 +1,6 @@
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { RadioGroupItem } from "@radix-ui/react-radio-group";
-import { EraserIcon, MousePointerIcon, RotateCwIcon } from "lucide-react";
+import { EraserIcon, HandIcon, RotateCwIcon } from "lucide-react";
 
 export function NavTools() {
   return (
@@ -9,10 +9,10 @@ export function NavTools() {
 
       <SidebarMenu>
         <SidebarMenuItem>
-          <RadioGroupItem value="pointer" asChild>
-            <SidebarMenuButton tooltip="Pointer">
-              <MousePointerIcon />
-              <span>Pointer</span>
+          <RadioGroupItem value="hand" asChild>
+            <SidebarMenuButton tooltip="Hand">
+              <HandIcon />
+              <span>Hand</span>
             </SidebarMenuButton>
           </RadioGroupItem>
         </SidebarMenuItem>

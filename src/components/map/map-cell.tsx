@@ -6,9 +6,10 @@ import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-interface MapCellProps {
+type MapCellProps = {
   id: number;
   value: CellValue | undefined;
+  className?: string
   onClick: () => void;
 }
 
@@ -23,10 +24,10 @@ const playerPosMapping: Record<SpawnPlayer, string> = {
   player_bl: "bottom-0.5 left-0.5"
 }
 
-function InnerMapCell({ value, onClick }: MapCellProps) {
+function InnerMapCell({ value, className, onClick }: MapCellProps) {
   return (
     <Button
-      className="size-[--cell-size] rounded-none px-0 focus-visible:ring-0 cursor-default relative"
+      className={cn("rounded-none px-0 focus-visible:ring-0 cursor-default relative", className)}
       variant="outline"
       size="icon"
       onClick={onClick}

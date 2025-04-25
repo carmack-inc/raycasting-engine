@@ -13,6 +13,17 @@ interface MapContentProps {
   onCellClick: (index: number) => void;
 }
 
+function computeInitialTransform(container: HTMLDivElement, content: HTMLDivElement) {
+  const { width: cw, height: ch } = container.getBoundingClientRect();
+  const { width: iw, height: ih } = content.getBoundingClientRect();
+
+  const scale = Math.min(cw / iw, ch / ih, 1);
+  const x = (cw - iw * scale) / 2;
+  const y = (ch - ih * scale) / 2;
+
+  return d3.zoomIdentity.translate(x, y).scale(scale);
+}
+
 export function MapContent({ map, columns, zoomDisabled, onCellClick }: MapContentProps) {
   const [zoom, setZoom] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,7 +44,7 @@ export function MapContent({ map, columns, zoomDisabled, onCellClick }: MapConte
       .filter(() => !zoomDisabled)
       .on("zoom", ({ transform }) => {
         const style = `translate(${transform.x}px, ${transform.y}px) scale(${transform.k})`;
-        setZoom(transform.k.toFixed(1));
+        setZoom(transform.k);
 
         content
           .style("transform", style)
@@ -46,6 +57,10 @@ export function MapContent({ map, columns, zoomDisabled, onCellClick }: MapConte
 
     d3Zoom.current = zoom;
     d3Container.current = container;
+
+    // const initialTransform = computeInitialTransform(containerRef.current, contentRef.current);
+    // container.call(zoom.transform, initialTransform);
+    // setZoom(initialTransform.k);
   }, []);
 
   useEffect(() => {
@@ -73,9 +88,9 @@ export function MapContent({ map, columns, zoomDisabled, onCellClick }: MapConte
   return (
     <div
       ref={containerRef}
-      className="w-full h-[calc(100svh-var(--navbar-height)-theme(spacing.4))] overflow-hidden relative"
+      className="w-full h-[calc(100svh-var(--navbar-height)-theme(spacing.4))] overflow-hidden relative flex items-center justify-center"
     >
-      <div ref={contentRef} className="p-4 pb-20 w-fit">
+      <div ref={contentRef} className="p-4 w-fit">
         <div
           className="grid grid-cols-[repeat(var(--columns),theme(spacing.10))] border border-input"
           style={{ "--columns": columns } as React.CSSProperties}

@@ -1,5 +1,6 @@
 "use client";
 
+import { CellValue, Map, SpawnPlayer } from "@/components/map/map-builder";
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
 import { InputManager } from "@/lib/engine/inputManager";
@@ -8,7 +9,8 @@ import { CanvasPaint } from "@/lib/engine/paint";
 import { Player } from "@/lib/engine/player";
 import { Renderer } from "@/lib/engine/render/renderer";
 import { Settings } from "@/lib/engine/settings";
-import { useEffect, useRef } from "react";
+import { Vec2 } from "@/lib/engine/vector";
+import { useEffect, useMemo, useRef } from "react";
 
 const MAP: ColorOptions[][] = [
   [0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
@@ -40,8 +42,53 @@ const ROTATE_SPEED = 3;
 const POSITION = { x: 3, y: 9 };
 const DIRECTION = { x: 1, y: 0 };
 
-export function Game() {
+export interface GameProps {
+  map: Map
+  columns: number
+}
+
+const outieToInnerMap: Partial<Record<CellValue, ColorOptions>> = {
+  wall_red: 1,
+  wall_green: 2,
+  wall_blue: 3,
+  wall_cyan: 5,
+  wall_magenta: 6,
+  wall_yellow: 7,
+}
+
+const playerPosMapping: Record<SpawnPlayer, Vec2> = {
+  player_l: { x: -1, y: 0 },
+  player_tl: { x: -1, y: 1 },
+  player_t: { x: 0, y: 1 },
+  player_tr: { x: 1, y: 1 },
+  player_r: { x: 1, y: 0 },
+  player_br: { x: 1, y: -1 },
+  player_b: { x: 0, y: -1 },
+  player_bl: { x: -1, y: -1 }
+}
+
+export function Game({ map, columns }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const engineMap = useMemo(() => {
+    const transformed = map.map((cell) => cell ? (outieToInnerMap[cell] ?? 0) : 0);
+    const innerMap: ColorOptions[][] = [];
+
+    for (let i = 0; i < map.length; i += columns) {
+      innerMap.push(transformed.slice(i, i + columns));
+    }
+
+    return innerMap;
+  }, [map, columns]);
+
+  const mapPlayer = useMemo(() => {
+    const index = map.findIndex((cell) => cell?.startsWith("player_"));
+    const player = map[index] as SpawnPlayer
+
+    return {
+      position: { x: index % columns, y: Math.floor(index / columns) },
+      direction: playerPosMapping[player],
+    };
+  }, [map, columns])
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -70,7 +117,7 @@ export function Game() {
           h: CANVAS_HEIGHT,
         },
       },
-      map: MAP,
+      map: engineMap,
       minimap: {
         size: MINIMAP_SIZE,
         position: {
@@ -97,8 +144,8 @@ export function Game() {
 
     const player = new Player(
       {
-        position: { x: POSITION.x, y: POSITION.y },
-        direction: { x: DIRECTION.x, y: DIRECTION.y },
+        position: { x: mapPlayer.position.x, y: mapPlayer.position.y },
+        direction: { x: mapPlayer.direction.x, y: mapPlayer.direction.y },
         rotateSpeed: ROTATE_SPEED,
         walkSpeed: WALK_SPEED,
       },
@@ -117,6 +164,7 @@ export function Game() {
       canvas.removeEventListener("click", requestPointer);
     };
   }, []);
+
   return (
     <canvas
       className="bg-black rounded-md"

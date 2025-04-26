@@ -1,5 +1,5 @@
-import { MapContent } from "@/app/engine/map"
+import { MapBuilder } from "@/components/map/map-builder";
 
 export default function Engine() {
-  return <MapContent />
+  return <MapBuilder />
 }

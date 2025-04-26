@@ -1,15 +1,12 @@
-import { EnemyType, GameState } from "@/lib/engine/gameModal";
-import { RayInfo } from "@/lib/engine/raycast";
-import { Renderable } from "@/lib/engine/render/renderable";
-import { Settings } from "@/lib/engine/settings";
-import { Vec2, Vector } from "@/lib/engine/vector";
+import { EnemyType, GameState } from "../gameModal";
+import { RayInfo } from "../raycast";
+import { Renderable } from "./renderable";
+import { Settings } from "../settings";
+import { Vec2, Vector } from "../vector";
 
 export class Entity extends Renderable{
-  //private sprites: spriteInfo[] ;
-
   constructor(settings: Settings){
     super(settings);
-    //this.sprites = [{position:{x: 10 , y: 9}, texture: 1}, {position:{x: 10 , y: 3}, texture: 2}];
   }
   render(gameState: GameState, rays: RayInfo[], buffer: number[]): void {
     

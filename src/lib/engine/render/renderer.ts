@@ -1,4 +1,4 @@
-import { Entity } from "@/lib/engine/render/entity";
+import { Entity } from "./entity";
 import { Paint } from "../paint";
 import { RayCast } from "../raycast";
 import { Settings } from "../settings";
@@ -7,7 +7,7 @@ import { Floor } from "./floor";
 import { Minimap } from "./minimap";
 import { Renderable } from "./renderable";
 import { Wall } from "./wall";
-import { GameState } from "@/lib/engine/gameModal";
+import { GameState } from "../gameModal";
 
 
 export class Renderer {

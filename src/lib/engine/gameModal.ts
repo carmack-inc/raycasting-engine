@@ -1,7 +1,7 @@
-import { Enemy, TextureType } from "@/lib/engine/enemy";
-import { ActionsFlags } from "@/lib/engine/inputManager";
-import { Player } from "@/lib/engine/player";
-import { Vec2 } from "@/lib/engine/vector";
+import { Enemy, TextureType } from "./enemy";
+import { ActionsFlags } from "./inputManager";
+import { Player } from "./player";
+import { Vec2 } from "./vector";
 
 
 export type EnemyType = {

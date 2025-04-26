@@ -1,9 +1,8 @@
-import { Player } from "../player";
 import { Settings } from "../settings";
 import { Renderable } from "./renderable";
 import { colorsVector } from "../colors";
 import { RayInfo } from "../raycast";
-import { GameState } from "@/lib/engine/gameModal";
+import { GameState } from "../gameModal";
 
 
 export class Wall extends Renderable {

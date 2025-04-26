@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { RayInfo } from "../raycast";
 import { GenerateSettingsType, Settings } from "../settings";
 import { Renderable } from "./renderable";
-import { GameState } from "@/lib/engine/gameModal";
+import { GameState } from "../gameModal";
 
 function generateSettings(): GenerateSettingsType {
   return {

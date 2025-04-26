@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { GenerateSettingsType, Settings } from "../settings";
 import { Ceil } from "./ceil";
-import { Player } from "../player";
 
 function generateSettings(): GenerateSettingsType {
   return {
@@ -73,7 +72,7 @@ describe("Function getRowVector", () => {
 describe("Function getRowPosition", () => {
   it("should return the correct start point to scanline in the maximum distance (world space)", () => {
     const settings = new Settings(generateSettings());
-    const playerPosition = { x: 0, y: 1 };
+    const playerPosition = { x: 0, y: 0 };
     const ceil = new Ceil(settings);
     const maxDistance = settings.canvasHeight / 2; // y = vanishingPoint - 1
     const rowPositionStartPoint = ceil.getRowPosition({

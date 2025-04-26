@@ -1,4 +1,4 @@
-import { GameState } from "@/lib/engine/gameModal";
+import { GameState } from "../gameModal";
 import { RayInfo } from "../raycast";
 import { Settings } from "../settings";
 import { Vec2, Vector } from "../vector";

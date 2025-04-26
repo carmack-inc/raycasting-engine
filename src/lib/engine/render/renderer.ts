@@ -7,7 +7,8 @@ import { Floor } from "./floor";
 import { Minimap } from "./minimap";
 import { Renderable } from "./renderable";
 import { Wall } from "./wall";
-import { GameStates } from "@/lib/engine/gameState";
+import { GameState } from "@/lib/engine/gameModal";
+
 
 export class Renderer {
   private _settings: Settings;
@@ -48,7 +49,7 @@ export class Renderer {
     }
   }
 
-  render(gameState: GameStates) {
+  render(gameState: GameState) {
     this.resetBuffer();
     const raysInfo = this._raycast.castAllRays(
       gameState.player.position,

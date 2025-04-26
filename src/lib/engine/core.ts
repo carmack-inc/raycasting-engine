@@ -1,4 +1,5 @@
-import { GameState, GameStates } from "@/lib/engine/gameState";
+
+import { GameModal } from "@/lib/engine/gameModal";
 import { InputManager } from "./inputManager";
 import { Player } from "./player";
 import { Renderer } from "./render/renderer";
@@ -8,8 +9,7 @@ export class Core {
   private _player: Player;
   private _input: InputManager;
   private _renderer: Renderer;
-  private _gameState: GameState;
-  private _actualState: GameStates;
+  private _gameModal: GameModal;
   private _currentTime: number;
   private _timeAccumulator: number;
   private _stopLoop: boolean;
@@ -19,8 +19,7 @@ export class Core {
     this._player = player;
     this._input = input;
     this._renderer = renderer;
-    this._gameState = new GameState(player, enemies);
-    this._actualState = this.createInitialState(enemies);
+    this._gameModal = new GameModal(player, enemies);
     this._currentTime = Date.now();
     this._stopLoop = false;
     this._timeAccumulator = 0;
@@ -43,42 +42,13 @@ export class Core {
       //console.log((1 / frameTime) * 1000);
       const keyboardSet = this._input.getKeyboardSet();
       const mouseMovement = this._input.consumeMouseInput();
-      //this._player.update(keyboardSet, mouseMovement);
-      this._actualState = this._gameState.update(keyboardSet, mouseMovement);
+      this._gameModal.update(keyboardSet, mouseMovement);
       this._timeAccumulator -= this.timePerFrame;
     }
-    this._renderer.render(this._actualState);
+    this._renderer.render(this._gameModal.state);
     if (this._stopLoop) return;
     window.requestAnimationFrame(this.gameLoop.bind(this));
   }
 
-  createInitialState(enemies: Enemy[]): GameStates{
-    const enemiesPos = enemies.map(enemy => {
-      return {
-        position:{
-          x: enemy.position.x,
-          y: enemy.position.y
-        },
-        texture: enemy.texture
-      }
-    })
-
-    return {
-      game: {
-        state: "running",
-      },
-      player:{
-        position:{
-          x: this._player.position.x,
-          y: this._player.position.y
-        },
-        direction:{
-          x: this._player.direction.x,
-          y: this._player.direction.y
-        }
-      },
-      enemies: enemiesPos
-    }
   
-  }
 }

@@ -1,5 +1,4 @@
-import { EnemyType, GameStates } from "@/lib/engine/gameState";
-import { Player } from "@/lib/engine/player";
+import { EnemyType, GameState } from "@/lib/engine/gameModal";
 import { RayInfo } from "@/lib/engine/raycast";
 import { Renderable } from "@/lib/engine/render/renderable";
 import { Settings } from "@/lib/engine/settings";
@@ -12,7 +11,7 @@ export class Entity extends Renderable{
     super(settings);
     //this.sprites = [{position:{x: 10 , y: 9}, texture: 1}, {position:{x: 10 , y: 3}, texture: 2}];
   }
-  render(gameState: GameStates, rays: RayInfo[], buffer: number[]): void {
+  render(gameState: GameState, rays: RayInfo[], buffer: number[]): void {
     
     gameState.enemies.sort((a,b)=>{
       const playerPos = gameState.player.position
@@ -26,7 +25,7 @@ export class Entity extends Renderable{
     }
   }
 
-  renderSprite(enemy: EnemyType, gameState: GameStates, rays: RayInfo[], buffer: number[]){
+  renderSprite(enemy: EnemyType, gameState: GameState, rays: RayInfo[], buffer: number[]){
     const spritePositionCamera = this.translateSpritePosition(enemy.position, gameState.player.position);
     const transform = this.worldToCameraTransform(spritePositionCamera, gameState.player.direction)
     if(transform.y == 0) return;

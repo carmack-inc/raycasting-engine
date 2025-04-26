@@ -1,5 +1,4 @@
-import { GameStates } from "@/lib/engine/gameState";
-import { Player } from "../player";
+import { GameState } from "@/lib/engine/gameModal";
 import { RayInfo } from "../raycast";
 import { Settings } from "../settings";
 import { Vec2, Vector } from "../vector";
@@ -10,7 +9,7 @@ export class Floor extends Renderable {
     super(settings);
   }
 
-  render(gameState: GameStates, rays: RayInfo[], buffer: number[]) {
+  render(gameState: GameState, rays: RayInfo[], buffer: number[]) {
     const { mostLeftRay, mostRightRay } = this.getSideRays(gameState.player.direction);
     const canvasWidth = this.settings.canvasWidth;
     const canvasHeight = this.settings.canvasHeight;

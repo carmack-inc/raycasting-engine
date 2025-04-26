@@ -8,7 +8,7 @@ export type EnemyType = {
   position: Vec2,
   texture: TextureType,
 }
-export type GameStates = {
+export type GameState = {
   game:{
     state: "running" | "lose" | "win";
   },
@@ -19,21 +19,30 @@ export type GameStates = {
   enemies: EnemyType[]
 }
 
-export class GameState{
+export class GameModal{
   private _player: Player;
   private _enemies: Enemy[];
+  private _state: GameState;
+  public get state(): GameState {
+    return this._state;
+  }
 
   constructor(player:Player, enemies: Enemy[]){
     this._player = player;
     this._enemies = enemies;
+    this._state = this.createState();
+
   }
 
-  update(keyboardSet: Set<ActionsFlags>, mouseMovement: number): GameStates{
+  update(keyboardSet: Set<ActionsFlags>, mouseMovement: number): void{
     this._player.update(keyboardSet, mouseMovement);
     this._enemies.forEach(enemy => {
       enemy.update(this._player.position)
     })
+    this._state = this.createState();
+  }
 
+  createState(): GameState{
     const enemiesPos = this._enemies.map(enemy => {
       return {
         position:{
@@ -60,6 +69,7 @@ export class GameState{
       },
       enemies: enemiesPos
     }
+  
   }
   
 

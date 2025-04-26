@@ -1,6 +1,6 @@
 "use client";
 
-import { CellValue, Map } from "@/components/map/map-builder";
+import { Map } from "@/components/map/map-builder";
 import { MapCell } from "@/components/map/map-cell";
 import { MapControls } from "@/components/map/map-controls";
 import { useEffect, useRef, useState } from "react";
@@ -11,17 +11,6 @@ interface MapContentProps {
   columns: number;
   zoomDisabled: boolean;
   onCellClick: (index: number) => void;
-}
-
-function computeInitialTransform(container: HTMLDivElement, content: HTMLDivElement) {
-  const { width: cw, height: ch } = container.getBoundingClientRect();
-  const { width: iw, height: ih } = content.getBoundingClientRect();
-
-  const scale = Math.min(cw / iw, ch / ih, 1);
-  const x = (cw - iw * scale) / 2;
-  const y = (ch - ih * scale) / 2;
-
-  return d3.zoomIdentity.translate(x, y).scale(scale);
 }
 
 export function MapContent({ map, columns, zoomDisabled, onCellClick }: MapContentProps) {
@@ -41,7 +30,6 @@ export function MapContent({ map, columns, zoomDisabled, onCellClick }: MapConte
 
     const zoom = d3.zoom<HTMLDivElement, unknown>()
       .scaleExtent([0.5, 2])
-      .filter(() => !zoomDisabled)
       .on("zoom", ({ transform }) => {
         const style = `translate(${transform.x}px, ${transform.y}px) scale(${transform.k})`;
         setZoom(transform.k);

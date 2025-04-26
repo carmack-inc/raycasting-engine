@@ -1,12 +1,8 @@
-
-import { GameModal } from "@/lib/engine/gameModal";
+import { GameModal } from "./gameModal";
 import { InputManager } from "./inputManager";
-import { Player } from "./player";
 import { Renderer } from "./render/renderer";
-import { Enemy } from "@/lib/engine/enemy";
 
 export class Core {
-  private _player: Player;
   private _input: InputManager;
   private _renderer: Renderer;
   private _gameModal: GameModal;
@@ -15,11 +11,10 @@ export class Core {
   private _stopLoop: boolean;
   private readonly FPS = 60;
   private readonly timePerFrame = 1000 / this.FPS;
-  constructor(player: Player, enemies: Enemy[], input: InputManager, renderer: Renderer) {
-    this._player = player;
+  constructor(gameModal: GameModal, input: InputManager, renderer: Renderer) {
     this._input = input;
     this._renderer = renderer;
-    this._gameModal = new GameModal(player, enemies);
+    this._gameModal = gameModal
     this._currentTime = Date.now();
     this._stopLoop = false;
     this._timeAccumulator = 0;
@@ -46,6 +41,8 @@ export class Core {
       this._timeAccumulator -= this.timePerFrame;
     }
     this._renderer.render(this._gameModal.state);
+    if(this._gameModal.state.game.state == "lose") return;
+    if(this._gameModal.state.game.state == "win") return;
     if (this._stopLoop) return;
     window.requestAnimationFrame(this.gameLoop.bind(this));
   }

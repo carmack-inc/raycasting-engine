@@ -3,14 +3,14 @@ import { ActionsFlags } from "./inputManager";
 import { Player } from "./player";
 import { Vec2 } from "./vector";
 
-
+type State = "running" | "lose" | "win";
 export type EnemyType = {
   position: Vec2,
   texture: TextureType,
 }
 export type GameState = {
   game:{
-    state: "running" | "lose" | "win";
+    state: State,
   },
   player: {
     position: Vec2,
@@ -43,6 +43,7 @@ export class GameModal{
   }
 
   createState(): GameState{
+    let state: State = "running"
     const enemiesPos = this._enemies.map(enemy => {
       return {
         position:{
@@ -53,9 +54,16 @@ export class GameModal{
       }
     })
 
+    this._enemies.forEach(enemy => {
+      if(Math.floor(enemy.position.x) == Math.floor(this._player.position.x) &&
+         Math.floor(enemy.position.y) == Math.floor(this._player.position.y)){
+          state = "lose";
+         }
+    })
+
     return {
-      game: {
-        state: "running",
+      game:{
+        state: state
       },
       player:{
         position:{

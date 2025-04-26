@@ -51,15 +51,20 @@ export class Renderer {
 
   render(gameState: GameState) {
     this.resetBuffer();
-    const raysInfo = this._raycast.castAllRays(
-      gameState.player.position,
-      gameState.player.direction,
-    );
-    this._floor.render(gameState, raysInfo, this.buffer);
-    this._ceil.render(gameState, raysInfo, this.buffer);
-    this._wall.render(gameState, raysInfo, this.buffer);
-    this._entity.render(gameState, raysInfo, this.buffer);
-    this._paint.paintBuffer(this.buffer);
-    this._minimap.renderMinimap(gameState.player.position, raysInfo);
+    if(gameState.game.state == "running"){
+      const raysInfo = this._raycast.castAllRays(
+        gameState.player.position,
+        gameState.player.direction,
+      );
+      this._floor.render(gameState, raysInfo, this.buffer);
+      this._ceil.render(gameState, raysInfo, this.buffer);
+      this._wall.render(gameState, raysInfo, this.buffer);
+      this._entity.render(gameState, raysInfo, this.buffer);
+      this._paint.paintBuffer(this.buffer);
+      this._minimap.renderMinimap(gameState.player.position, raysInfo);
+    } else {
+      this._paint.paintBuffer(this.buffer);
+    }
+    
   }
 }

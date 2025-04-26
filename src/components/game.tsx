@@ -3,6 +3,7 @@
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
 import { Enemy } from "@/lib/engine/enemy";
+import { GameModal } from "@/lib/engine/gameModal";
 import { InputManager } from "@/lib/engine/inputManager";
 import { CanvasPaint } from "@/lib/engine/paint";
 
@@ -105,14 +106,13 @@ export function Game() {
       },
       settings
     );
-
-    const canvasPaint = new CanvasPaint(canvas);
-
     const enemy1 = new Enemy({position:{x: 10 , y: 9}, texture: "Square"}, settings)
     const enemy2 = new Enemy({position:{x: 10 , y: 3}, texture: "Circle"}, settings)
 
+    const canvasPaint = new CanvasPaint(canvas);   
+    const gameModal = new GameModal(player, [enemy1, enemy2])
     const renderer = new Renderer(settings, canvasPaint);
-    const core = new Core(player, [enemy1, enemy2], input, renderer);
+    const core = new Core(gameModal, input, renderer);
     core.start();
 
     //start(canvas);

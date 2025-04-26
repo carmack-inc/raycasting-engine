@@ -12,8 +12,11 @@ import {
   SidebarMenuItem
 } from "@/components/ui/sidebar";
 
-export function NavMain() {
-  const [settingsOpen, setSettingsOpen] = useState(false)
+interface NavMainProps {
+  onSettingsClick: () => void;
+}
+
+export function NavMain({ onSettingsClick }: NavMainProps) {
   const [assetsOpen, setAssetsOpen] = useState(false)
 
   return (
@@ -30,7 +33,7 @@ export function NavMain() {
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Settings"
-              onClick={() => setSettingsOpen(true)}
+              onClick={onSettingsClick}
             >
               <SettingsIcon />
               <span>Settings</span>
@@ -49,7 +52,6 @@ export function NavMain() {
         </SidebarMenu>
       </SidebarGroup>
 
-      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
       <AssetsDialog open={assetsOpen} onOpenChange={setAssetsOpen} />
     </>
   )

@@ -1,6 +1,7 @@
 "use client";
 
 import { CellValue, Map, SpawnPlayer } from "@/components/map/map-builder";
+import { SettingsSchema } from "@/components/settings-dialog";
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
 import { InputManager } from "@/lib/engine/inputManager";
@@ -43,8 +44,9 @@ const POSITION = { x: 3, y: 9 };
 const DIRECTION = { x: 1, y: 0 };
 
 export interface GameProps {
-  map: Map
-  columns: number
+  map: Map;
+  columns: number;
+  settings: SettingsSchema;
 }
 
 const outieToInnerMap: Partial<Record<CellValue, ColorOptions>> = {
@@ -67,7 +69,7 @@ const playerPosMapping: Record<SpawnPlayer, Vec2> = {
   player_bl: { x: -1, y: -1 }
 }
 
-export function Game({ map, columns }: GameProps) {
+export function Game({ map, columns, settings: outsideSettings }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineMap = useMemo(() => {
     const transformed = map.map((cell) => cell ? (outieToInnerMap[cell] ?? 0) : 0);
@@ -110,6 +112,11 @@ export function Game({ map, columns }: GameProps) {
       }
     };
     const input = new InputManager({ UP_KEY, DOWN_KEY, LEFT_KEY, RIGHT_KEY });
+
+    const minimapSize = outsideSettings.minimapSize[0];
+    const minimapZoom = (1 + 5) - outsideSettings.minimapZoom[0];
+    const pixelSize = minimapSize / (minimapZoom * 2);
+
     const settings = new Settings({
       canvas: {
         size: {
@@ -119,12 +126,12 @@ export function Game({ map, columns }: GameProps) {
       },
       map: engineMap,
       minimap: {
-        size: MINIMAP_SIZE,
+        size: minimapSize,
         position: {
-          x: MINIMAP_POSITION_X,
-          y: MINIMAP_POSITION_Y,
+          x: CANVAS_WIDTH - minimapSize - pixelSize / 2,
+          y: CANVAS_HEIGHT - minimapSize - pixelSize / 2,
         },
-        zoom: MINIMAP_ZOOM,
+        zoom: minimapZoom,
       },
     });
 

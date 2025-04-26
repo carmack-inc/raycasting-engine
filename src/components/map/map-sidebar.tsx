@@ -24,9 +24,10 @@ type MapSidebarProps = React.ComponentProps<typeof Sidebar> & {
   tool: Tool;
   playerRequired: boolean;
   onToolChange: (tool: Tool) => void;
+  onSettingsClick: () => void;
 }
 
-export function MapSidebar({ tool, playerRequired, onToolChange, ...props }: MapSidebarProps) {
+export function MapSidebar({ tool, playerRequired, onToolChange, onSettingsClick, ...props }: MapSidebarProps) {
   return (
     <Sidebar variant="inset" collapsible="icon" {...props}>
       <SidebarHeader>
@@ -42,7 +43,7 @@ export function MapSidebar({ tool, playerRequired, onToolChange, ...props }: Map
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain />
+        <NavMain onSettingsClick={onSettingsClick} />
 
         <RadioGroup
           orientation="vertical"

@@ -3,6 +3,7 @@
 import { Header } from "@/app/engine/header";
 import { MapContent } from "@/components/map/map-content";
 import { MapSidebar } from "@/components/map/map-sidebar";
+import { SettingsDialog, SettingsSchema } from "@/components/settings-dialog";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ColorOptions } from "@/lib/engine/colors";
 import { useMemo, useState } from "react";
@@ -73,6 +74,18 @@ export function isPlayerCell(val: CellValue | undefined): val is SpawnPlayer {
 export function MapBuilder() {
   const [activeTool, setActiveTool] = useState<Tool>("hand");
   const [map, setMap] = useState(createInitialMap);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settings, setSettings] = useState<SettingsSchema>({
+    sensitivity: [1],
+    fov: [80],
+    minimapSize: [200],
+    minimapZoom: [1],
+    keyUp: "W",
+    keyDown: "S",
+    keyLeft: "A",
+    keyRight: "D",
+  });
+
   const playerRequired = useMemo(
     () => map.findIndex((cell) => isPlayerCell(cell)) == -1,
     [map],
@@ -124,12 +137,14 @@ export function MapBuilder() {
         tool={activeTool}
         playerRequired={playerRequired}
         onToolChange={setActiveTool}
+        onSettingsClick={() => setSettingsOpen(true)}
       />
       <SidebarInset className="min-w-0 [--navbar-height:theme(spacing.12)]">
         <Header
           gameDisabled={playerRequired}
           map={map}
           columns={COLUMNS}
+          settings={settings}
         />
         <div
           className="data-[tool=hand]:cursor-grab active:data-[tool=hand]:cursor-grabbing"
@@ -143,6 +158,13 @@ export function MapBuilder() {
           />
         </div>
       </SidebarInset>
+      
+      <SettingsDialog
+        open={settingsOpen}
+        settings={settings}
+        onOpenChange={setSettingsOpen}
+        onSettingsChange={setSettings}
+      />
     </SidebarProvider>
   );
 }

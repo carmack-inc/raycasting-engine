@@ -11,32 +11,31 @@ const formSchema = z.object({
   sensitivity: z.number().min(1).max(5).array(),
   fov: z.number().positive().array(),
   minimapSize: z.number().min(50).max(200).array(),
-  minimapZoom: z.number().min(1).max(3).array(),
+  minimapZoom: z.number().min(1).max(5).array(),
   keyUp: z.string(),
   keyDown: z.string(),
   keyLeft: z.string(),
   keyRight: z.string(),
 });
 
-type FormSchema = z.infer<typeof formSchema>;
+export type SettingsSchema = z.infer<typeof formSchema>;
 
-export function SettingsDialog({ ...props }: React.ComponentProps<typeof Dialog>) {
-  const form = useForm<FormSchema>({
+interface SettingsDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  settings: SettingsSchema;
+  onSettingsChange: (settings: SettingsSchema) => void;
+}
+
+export function SettingsDialog({ settings, onSettingsChange, ...props }: SettingsDialogProps) {
+  const form = useForm<SettingsSchema>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      sensitivity: [1],
-      fov: [80],
-      minimapSize: [50],
-      minimapZoom: [1],
-      keyUp: "W",
-      keyDown: "S",
-      keyLeft: "A",
-      keyRight: "D",
-    }
+    defaultValues: settings,
   });
 
-  function onSubmit(values: FormSchema) {
-
+  function onSubmit(values: SettingsSchema) {
+    onSettingsChange(values);
+    props.onOpenChange(false);
   }
 
   return (
@@ -90,7 +89,7 @@ export function SettingsDialog({ ...props }: React.ComponentProps<typeof Dialog>
                     <FormItem>
                       <FormLabel>Minimap size</FormLabel>
                       <FormControl>
-                        <Slider max={200} step={1} onValueChange={onChange} {...field} />
+                        <Slider min={50} max={200} step={5} onValueChange={onChange} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -104,7 +103,7 @@ export function SettingsDialog({ ...props }: React.ComponentProps<typeof Dialog>
                     <FormItem>
                       <FormLabel>Minimap zoom</FormLabel>
                       <FormControl>
-                        <Slider max={3} step={0.5} onValueChange={onChange} {...field} />
+                        <Slider min={1} max={5} step={0.5} onValueChange={onChange} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

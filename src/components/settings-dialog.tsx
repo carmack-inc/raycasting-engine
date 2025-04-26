@@ -52,86 +52,87 @@ export function SettingsDialog({ ...props }: React.ComponentProps<typeof Dialog>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="grid grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="sensitivity"
-                render={({ field: { onChange, ...field } }) => (
-                  <FormItem>
-                    <FormLabel>Sensitivity</FormLabel>
-                    <FormControl>
-                      <Slider max={5} step={0.01} onValueChange={onChange} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="border rounded-lg space-y-4 p-4">
+                <div className="font-semibold tracking-tight">View</div>
 
-              <FormField
-                control={form.control}
-                name="fov"
-                render={({ field: { onChange, ...field } }) => (
-                  <FormItem>
-                    <FormLabel>Field of View (FOV)</FormLabel>
-                    <FormControl>
-                      <Slider max={110} step={1} onValueChange={onChange} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="sensitivity"
+                  render={({ field: { onChange, ...field } }) => (
+                    <FormItem>
+                      <FormLabel>Sensitivity</FormLabel>
+                      <FormControl>
+                        <Slider max={5} step={0.01} onValueChange={onChange} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="minimapSize"
-                render={({ field: { onChange, ...field } }) => (
-                  <FormItem>
-                    <FormLabel>Minimap size</FormLabel>
-                    <FormControl>
-                      <Slider max={200} step={1} onValueChange={onChange} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="fov"
+                  render={({ field: { onChange, ...field } }) => (
+                    <FormItem>
+                      <FormLabel>Field of View (FOV)</FormLabel>
+                      <FormControl>
+                        <Slider max={110} step={1} onValueChange={onChange} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="minimapZoom"
-                render={({ field: { onChange, ...field } }) => (
-                  <FormItem>
-                    <FormLabel>Minimap zoom</FormLabel>
-                    <FormControl>
-                      <Slider max={3} step={0.5} onValueChange={onChange} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="minimapSize"
+                  render={({ field: { onChange, ...field } }) => (
+                    <FormItem>
+                      <FormLabel>Minimap size</FormLabel>
+                      <FormControl>
+                        <Slider max={200} step={1} onValueChange={onChange} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <div className="space-y-2">
-                <div className="text-sm font-medium">Controls</div>
+                <FormField
+                  control={form.control}
+                  name="minimapZoom"
+                  render={({ field: { onChange, ...field } }) => (
+                    <FormItem>
+                      <FormLabel>Minimap zoom</FormLabel>
+                      <FormControl>
+                        <Slider max={3} step={0.5} onValueChange={onChange} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-                <div className="border rounded-lg space-y-4 p-4">
+              <div className="border rounded-lg space-y-4 p-4">
+                <div className="font-semibold tracking-tight">Controls</div>
 
-                  <div className="flex items-center justify-between">
-                    <Label>Forward</Label>
-                    <Button variant="secondary" size="icon">W</Button>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <Label>Forward</Label>
+                  <Button variant="secondary" size="icon">W</Button>
+                </div>
 
-                  <div className="flex items-center justify-between">
-                    <Label>Backward</Label>
-                    <Button variant="secondary" size="icon">S</Button>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <Label>Backward</Label>
+                  <Button variant="secondary" size="icon">S</Button>
+                </div>
 
-                  <div className="flex items-center justify-between">
-                    <Label>Left</Label>
-                    <Button variant="secondary" size="icon">A</Button>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <Label>Left</Label>
+                  <Button variant="secondary" size="icon">A</Button>
+                </div>
 
-                  <div className="flex items-center justify-between">
-                    <Label>Right</Label>
-                    <Button variant="secondary" size="icon">D</Button>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <Label>Right</Label>
+                  <Button variant="secondary" size="icon">D</Button>
                 </div>
               </div>
             </div>

@@ -4,8 +4,16 @@ import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div className="w-full h-screen flex items-center justify-center flex-col gap-4">
-      <section className="text-center flex flex-col items-center">
+    <div>
+      <Hero />
+    </div>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="flex flex-col items-center py-32">
+      <div className="text-center flex flex-col items-center">
         <Button asChild variant="ghost">
           <a href="https://github.com/carmack-inc" target="_blank">
             <span className="inline-flex items-center justify-center size-6 bg-foreground rounded-md">
@@ -15,15 +23,15 @@ export default function Home() {
           </a>
         </Button>
 
-        <h1 className="text-5xl font-bold tracking-tight">
+        <h1 className="text-5xl font-semibold tracking-tight">
           Raycasting engine
         </h1>
         <p className="mt-2 text-xl text-muted-foreground">
           Simple engine based on the raycasting rendering technique.
         </p>
-      </section>
+      </div>
 
-      <div className="flex items-center gap-x-2 mt-4">
+      <div className="flex items-center gap-x-2 mt-6">
         <Button asChild>
           <Link href="/engine">
             <FilePlus2Icon />
@@ -40,6 +48,6 @@ export default function Home() {
           </a>
         </Button>
       </div>
-    </div>
+    </section>
   );
 }

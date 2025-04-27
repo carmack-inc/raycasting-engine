@@ -12,7 +12,14 @@ interface HomeMapCardProps {
 
 export function HomeMapCard({ id, name, description, creator }: HomeMapCardProps) {
   return (
-    <Link className="group relative rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background" href="/engine" aria-labelledby={`card-${id}-name`}>
+    <Link
+      className="group relative rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background" 
+      href={{
+        pathname: "/engine",
+        query: { example: id },
+      }}
+      aria-labelledby={`card-${id}-name`}
+    >
       <span aria-hidden="true" className="absolute -inset-2 bg-muted rounded-lg opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-[opacity,transform]" />
 
       <div className="aspect-video bg-muted rounded-md overflow-hidden shadow-sm relative border">

@@ -6,7 +6,10 @@ import { MapSidebar } from "@/components/map/map-sidebar";
 import { SettingsDialog, SettingsSchema } from "@/components/settings-dialog";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ColorOptions } from "@/lib/engine/colors";
-import { useMemo, useState } from "react";
+import { maps } from "@/lib/map-examples";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { z } from "zod";
 
 export type Tool = GeneralTool | EssentialTool | EnemyTool | WallTool
 export type GeneralTool = "hand" | "pivot" | "eraser"
@@ -21,24 +24,6 @@ export type SpawnPlayer = "player_t" | "player_tr" | "player_tl"
 export type CellValue = Exclude<EssentialTool, "player"> | EnemyTool | WallTool | SpawnPlayer
 export type Map = (CellValue | undefined)[]
 
-const MAP: ColorOptions[][] = [
-  [0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 7, 0, 2],
-  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 1, 1, 1, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-];
-
-const COLUMNS = MAP[0].length;
-const ROWS = MAP.length;
-
 const innerToOutieMap: Record<ColorOptions, CellValue | undefined> = {
   0: undefined,
   1: "wall_red",
@@ -50,15 +35,35 @@ const innerToOutieMap: Record<ColorOptions, CellValue | undefined> = {
   7: "wall_yellow",
 }
 
-function createInitialMap(): Map {
-  // return Array.from<CellValue | undefined>({ length: ROWS * COLUMNS })
+const querySchema = z.coerce.number().min(1).max(6);
 
-  const example = MAP.flatMap((row) => row.map((cell) => innerToOutieMap[cell]));
+interface MapState {
+  map: Map;
+  columns: number;
+  rows: number;
+}
+
+function createInitialMap(exampleId?: number): MapState {
+  if (!exampleId) {
+    const rows = 20;
+    const columns = 20;
+
+    return {
+      map: Array.from<CellValue | undefined>({ length: rows * columns }),
+      rows,
+      columns,
+    };
+  }
+
+  const example = maps[exampleId - 1];
+  const rows = example.map.length;
+  const columns = example.map[0].length;
+  const map = example.map.flatMap((row) => row.map((cell) => innerToOutieMap[cell]));
 
   // Position the player
-  example[9 * COLUMNS + 3] = "player_r";
+  map[example.spawn.x * columns + example.spawn.y] = "player_r";
 
-  return example;
+  return { map, rows, columns };
 }
 
 const PLAYER_POSITIONS: readonly SpawnPlayer[] = [
@@ -90,20 +95,31 @@ export function MapBuilder() {
     keyRight: "D",
   });
 
+  const searchParams = useSearchParams();
+  const exampleQuery = searchParams.get("example");
+
+  useEffect(() => {
+    const exampleId = querySchema.safeParse(exampleQuery);
+
+    if (exampleId.data) {
+      setMap(createInitialMap(exampleId.data));
+    }
+  }, [exampleQuery]);
+
   const playerRequired = useMemo(
-    () => map.findIndex((cell) => isPlayerCell(cell)) == -1,
+    () => map.map.findIndex((cell) => isPlayerCell(cell)) == -1,
     [map],
   );
 
   function updateCell(index: number) {
-    const cell = map[index];
+    const cell = map.map[index];
 
     if (activeTool === "hand") {
       return;
     }
 
     if (activeTool === "eraser") {
-      setMap((map) => map.with(index, undefined));
+      setMap((map) => ({ ...map, map: map.map.with(index, undefined) }));
       return;
     }
 
@@ -112,7 +128,7 @@ export function MapBuilder() {
         const current = PLAYER_POSITIONS.indexOf(cell)
         const next = PLAYER_POSITIONS[(current + 1) % PLAYER_POSITIONS.length]
 
-        setMap((map) => map.with(index, next))
+        setMap((map) => ({ ...map, map: map.map.with(index, next) }));
       }
 
       return;
@@ -120,19 +136,22 @@ export function MapBuilder() {
 
     if (activeTool === "player") {
       // Check if there's an existing player and move it if it's the case.
-      const existingPlayerIndex = map.findIndex((cell) => isPlayerCell(cell));
+      const existingPlayerIndex = map.map.findIndex((cell) => isPlayerCell(cell));
       
       if (existingPlayerIndex >= 0) {
-        const existingPlayer = map[existingPlayerIndex];
-        setMap((map) => map.with(existingPlayerIndex, undefined).with(index, existingPlayer))
+        const existingPlayer = map.map[existingPlayerIndex];
+        setMap((map) => ({
+          ...map,
+          map: map.map.with(existingPlayerIndex, undefined).with(index, existingPlayer),
+        }))
       } else {
-        setMap((map) => map.with(index, "player_r"));
+        setMap((map) => ({ ...map, map: map.map.with(index, "player_r") }));
       }
 
       return;
     }
 
-    setMap((map) => map.with(index, activeTool));
+    setMap((map) => ({ ...map, map: map.map.with(index, activeTool) }));
   }
 
   return (
@@ -146,8 +165,8 @@ export function MapBuilder() {
       <SidebarInset className="min-w-0 [--navbar-height:theme(spacing.12)]">
         <Header
           gameDisabled={playerRequired}
-          map={map}
-          columns={COLUMNS}
+          map={map.map}
+          columns={map.columns}
           settings={settings}
         />
         <div
@@ -155,9 +174,9 @@ export function MapBuilder() {
           data-tool={activeTool}
         >
           <MapContent
-            map={map}
+            map={map.map}
             zoomDisabled={activeTool !== "hand"}
-            columns={COLUMNS}
+            columns={map.columns}
             onCellClick={updateCell}
           />
         </div>

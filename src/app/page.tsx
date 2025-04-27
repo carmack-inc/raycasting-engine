@@ -67,8 +67,14 @@ function Examples() {
       </p>
 
       <div className="grid grid-cols-3 gap-6 mt-8">
-        {maps.map((map, idx) => (
-          <HomeMapCard key={idx} id={idx + 1} {...map} />
+        {maps.map(({ name, description, creator }, idx) => (
+          <HomeMapCard
+            key={idx}
+            id={idx + 1}
+            name={name}
+            description={description}
+            creator={creator}
+          />
         ))}
       </div>
     </section>

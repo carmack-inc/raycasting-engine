@@ -1,18 +1,20 @@
 import { Button } from '@/components/ui/button'
-import { ArrowRightIcon, FilePlus2Icon, JoystickIcon } from 'lucide-react'
+import { ArrowRightIcon, FilePlus2Icon, JoystickIcon } from 'lucide-react';
 import Link from 'next/link'
 
 export default function Home() {
   return (
     <div>
       <Hero />
+      <Examples />
+      <Footer />
     </div>
   );
 }
 
 function Hero() {
   return (
-    <section className="flex flex-col items-center py-32">
+    <section className="flex flex-col items-center py-32 container mx-auto">
       <div className="text-center flex flex-col items-center">
         <Button asChild variant="ghost">
           <a href="https://github.com/carmack-inc" target="_blank">
@@ -49,5 +51,65 @@ function Hero() {
         </Button>
       </div>
     </section>
+  );
+}
+
+function Examples() {
+  return (
+    <section className="container mx-auto pb-20">
+      <h2 className="font-semibold text-lg tracking-tight">
+        Get started with some examples
+      </h2>
+      <p className="text-muted-foreground text-sm">
+        Pick one of the maps handcrafted by our team to start prototyping faster.
+      </p>
+
+      <div className="grid grid-cols-3 gap-6 mt-8">
+        <ExampleMapCard mapId={1} />
+        <ExampleMapCard mapId={2} />
+        <ExampleMapCard mapId={3} />
+        <ExampleMapCard mapId={4} />
+        <ExampleMapCard mapId={5} />
+        <ExampleMapCard mapId={6} />
+      </div>
+    </section>
+  );
+}
+
+function ExampleMapCard({ mapId }: { mapId: number }) {
+  return (
+    <Link className="group relative rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background" href="/engine" aria-labelledby={`card-${mapId}-name`}>
+      <span aria-hidden="true" className="absolute -inset-2 bg-muted rounded-lg opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-[opacity,transform]" />
+
+      <div className="aspect-video bg-muted rounded-md overflow-hidden shadow-sm relative border">
+        <img
+          src={`https://picsum.photos/id/${mapId * 20}/848/480`}
+          alt="Placeholder"
+        />
+
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center justify-between gap-x-2 text-sm font-medium bg-white py-1 w-fit px-3 rounded-full shadow">
+            Open in the engine
+            <ArrowRightIcon className="size-4" />
+          </div>
+        </div>
+      </div>
+
+      <div className="-space-y-0.5 mt-2 relative">
+        <span id={`card-${mapId}-name`} className="block font-medium text-sm">Map name</span>
+        <span className="block text-sm text-muted-foreground">Map description</span>
+      </div>
+    </Link>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="text-center text-sm text-muted-foreground py-8 border-t">
+      <p>
+        Project developed for the Software Engineering Lab. class at <a href="https://ufabc.edu.br/" target="_blank" className="hover:text-foreground hover:underline hover:underline-offset-4">UFABC</a>.
+      </p>
+      <p>Copyright &copy; 2025 Carmack Inc.</p>
+    </footer>
   );
 }

@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowRightIcon, UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import nextConfig from "../../next.config";
 
 interface HomeMapCardProps {
   id: number
@@ -24,7 +25,7 @@ export function HomeMapCard({ id, name, description, creator }: HomeMapCardProps
 
       <div className="aspect-video bg-muted rounded-md overflow-hidden shadow-sm relative border">
         <Image
-          src={`/maps/map-${id}.jpg`}
+          src={`${nextConfig.basePath ?? ""}/maps/map-${id}.jpg`}
           width={840}
           height={480}
           alt={`${name} screenshot`}

@@ -4,6 +4,7 @@ import { CellValue, isEnemyCell, Map, SpawnPlayer } from "@/components/map/map-b
 import { SettingsSchema } from "@/components/settings-dialog";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
 import { InputManager } from "@/lib/engine/inputManager";
@@ -120,6 +121,7 @@ function buildMap(map: Map, columns: number) {
 
 export function Game({ map, columns, settings: outsideSettings }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { toast } = useToast();
   
   const engineMap = useMemo(() => buildMap(map, columns), [map, columns]);
   const objects = useMemo(() => {
@@ -131,25 +133,51 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
     return { player, enemies, finals, deaths };
   }, [map, columns]);
 
+  async function requestPointerLock() {
+    if (!canvasRef.current) {
+      return;
+    }
+
+    if (!document.pointerLockElement) {
+      try {
+        await canvasRef.current.requestPointerLock({
+          unadjustedMovement: true,
+        });
+      } catch (error) {
+        if (error instanceof Error && error.name === "NotSupportedError") {
+          await canvasRef.current.requestPointerLock();
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
+  async function requestFullscreen() {
+    if (!canvasRef.current) {
+      return;
+    }
+
+    if (!document.fullscreenElement) {
+      try {
+        await canvasRef.current.requestFullscreen();
+        await requestPointerLock();
+      } catch (error) {
+        if (error instanceof Error) {
+          toast({
+            variant: "destructive",
+            title: "Error attempting to enable fullscreen mode",
+            description: error.message,
+          });
+        }
+      }
+    }
+  }
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas == null) return;
 
-    const requestPointer = async () => {
-      if (!document.pointerLockElement) {
-        try {
-          await canvas.requestPointerLock({
-            unadjustedMovement: true,
-          });
-        } catch (error) {
-          if (error instanceof Error && error.name === "NotSupportedError") {
-            await canvas.requestPointerLock();
-          } else {
-            throw error;
-          }
-        }
-      }
-    };
     const input = new InputManager({ UP_KEY, DOWN_KEY, LEFT_KEY, RIGHT_KEY });
 
     const minimapSize = outsideSettings.minimapSize[0];
@@ -174,7 +202,7 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
       },
     });
 
-    canvas.addEventListener("click", requestPointer);
+    canvas.addEventListener("click", requestPointerLock);
 
     canvas.addEventListener("mousemove", (event) => {
       input.produceMouseInput(event.movementX);
@@ -207,9 +235,9 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
     //start(canvas);
     return () => {
       core.stop();
-      canvas.removeEventListener("click", requestPointer);
+      canvas.removeEventListener("click", requestPointerLock);
     };
-  }, []);
+  }, []); 
 
   return (
     <div className="space-y-4">
@@ -221,7 +249,7 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
       />
 
       <DialogFooter>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={requestFullscreen}>
           <ExpandIcon />
           Fullscreen
         </Button>

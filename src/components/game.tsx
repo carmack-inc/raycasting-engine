@@ -202,19 +202,14 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
       },
     });
 
+    const onMouseMove = (event: MouseEvent) => input.produceMouseInput(event.movementX);
+    const onKeydown = (event: KeyboardEvent) => input.registerKeyboardInput(event.key);
+    const onKeyup = (event: KeyboardEvent) => input.deregisterKeyboardInput(event.key);
+
     canvas.addEventListener("click", requestPointerLock);
-
-    canvas.addEventListener("mousemove", (event) => {
-      input.produceMouseInput(event.movementX);
-    });
-
-    document.addEventListener("keydown", (event) => {
-      input.registerKeyboardInput(event.key);
-    });
-
-    document.addEventListener("keyup", (event) => {
-      input.deregisterKeyboardInput(event.key);
-    });
+    canvas.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("keydown", onKeydown);
+    document.addEventListener("keyup", onKeyup);
 
     const player = new Player(
       {
@@ -236,6 +231,9 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
     return () => {
       core.stop();
       canvas.removeEventListener("click", requestPointerLock);
+      canvas.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("keydown", onKeydown);
+      document.removeEventListener("keyup", onKeyup);
     };
   }, []); 
 

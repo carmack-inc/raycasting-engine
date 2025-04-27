@@ -135,7 +135,7 @@ export class Minimap {
     };
   }
 
-  getPixelColor(jPos: number, iPos: number): number[] {
+  getPixelColor(jPos: number, iPos: number): readonly number[] {
     if (jPos > this._settings.map.length - 1 || jPos < 0)
       return RGBVector.black;
     if (iPos < 0 || iPos > this._settings.map[0].length - 1)

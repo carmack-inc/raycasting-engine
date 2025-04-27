@@ -39,15 +39,28 @@ export class Floor extends Renderable {
         rowPosition.y -= rowStep.y;
 
         if (!this.isCellOutOfBounds(cell)) {
-          if ((cell.y + cell.x) % 2 == 0) {
+          let isGoalCell = false;
+          gameState.goals.forEach(goal => {
+            isGoalCell = cell.x == goal.x && cell.y == goal.y
+          })
+          if(isGoalCell){
             this.setPixelBuffer(
               buffer,
               { x, y },
-              { r: 255, g: 255, b: 255, a: 255 }
+              { r: 255, g: 255, b: 0, a: 255 }
             );
-          } else {
-            this.setPixelBuffer(buffer, { x, y }, { r: 0, g: 0, b: 0, a: 255 });
+          } else{
+            if ((cell.y + cell.x) % 2 == 0) {
+              this.setPixelBuffer(
+                buffer,
+                { x, y },
+                { r: 255, g: 255, b: 255, a: 255 }
+              );
+            } else {
+              this.setPixelBuffer(buffer, { x, y }, { r: 0, g: 0, b: 0, a: 255 });
+            }
           }
+          
         }
       }
     }

@@ -17,19 +17,22 @@ export type GameState = {
     direction: Vec2,
   },
   enemies: EnemyType[]
+  goals: Vec2[];
 }
 
 export class GameModal{
   private _player: Player;
   private _enemies: Enemy[];
+  private _goals: Vec2[];
   private _state: GameState;
   public get state(): GameState {
     return this._state;
   }
 
-  constructor(player:Player, enemies: Enemy[]){
+  constructor(player:Player, enemies: Enemy[], goals: Vec2[]){
     this._player = player;
     this._enemies = enemies;
+    this._goals = goals;
     this._state = this.createState();
 
   }
@@ -54,11 +57,25 @@ export class GameModal{
       }
     })
 
+    const goalsPos = this._goals.map(goal => {
+      return {
+          x: goal.x,
+          y: goal.y
+      }
+    })
+
     this._enemies.forEach(enemy => {
       if(Math.floor(enemy.position.x) == Math.floor(this._player.position.x) &&
          Math.floor(enemy.position.y) == Math.floor(this._player.position.y)){
           state = "lose";
          }
+    })
+
+    this._goals.forEach(goal => {
+      if(Math.floor(goal.x) == Math.floor(this._player.position.x) &&
+      Math.floor(goal.y) == Math.floor(this._player.position.y)){
+       state = "win";
+      }
     })
 
     return {
@@ -75,7 +92,8 @@ export class GameModal{
           y: this._player.direction.y
         }
       },
-      enemies: enemiesPos
+      enemies: enemiesPos,
+      goals: goalsPos
     }
   
   }

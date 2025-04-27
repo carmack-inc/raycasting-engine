@@ -15,7 +15,7 @@ import { useEffect, useRef } from "react";
 const MAP: ColorOptions[][] = [
   [0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 7, 0, 2],
+  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
@@ -110,7 +110,7 @@ export function Game() {
     const enemy2 = new Enemy({position:{x: 10 , y: 3}, texture: "Circle"}, settings)
 
     const canvasPaint = new CanvasPaint(canvas);   
-    const gameModal = new GameModal(player, [enemy1, enemy2])
+    const gameModal = new GameModal(player, [enemy1, enemy2], [{x:15,y:2}])
     const renderer = new Renderer(settings, canvasPaint);
     const core = new Core(gameModal, input, renderer);
     core.start();

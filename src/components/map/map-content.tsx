@@ -76,7 +76,7 @@ export function MapContent({ map, columns, zoomDisabled, onCellClick }: MapConte
   return (
     <div
       ref={containerRef}
-      className="w-full h-[calc(100svh-var(--navbar-height)-theme(spacing.4))] overflow-hidden relative flex items-center justify-center"
+      className="w-full h-[calc(100svh-var(--navbar-height)-theme(spacing.4))] overflow-hidden relative"
     >
       <div ref={contentRef} className="p-4 w-fit">
         <div

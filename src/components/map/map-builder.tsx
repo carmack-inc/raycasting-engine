@@ -3,6 +3,7 @@
 import { Header } from "@/app/engine/header";
 import { MapContent } from "@/components/map/map-content";
 import { MapSidebar } from "@/components/map/map-sidebar";
+import { SettingsDialog, SettingsSchema } from "@/components/settings-dialog";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ColorOptions } from "@/lib/engine/colors";
 import { useMemo, useState } from "react";
@@ -10,7 +11,7 @@ import { useMemo, useState } from "react";
 export type Tool = GeneralTool | EssentialTool | EnemyTool | WallTool
 export type GeneralTool = "hand" | "pivot" | "eraser"
 export type EssentialTool = "player" | "end" | "death"
-export type EnemyTool = "enemy_gladiator"
+export type EnemyTool = "enemy_square" | "enemy_circle"
 export type WallTool = "wall_blue" | "wall_red" | "wall_green" | "wall_cyan" | "wall_magenta" | "wall_yellow"
 
 export type SpawnPlayer = "player_t" | "player_tr" | "player_tl"
@@ -70,9 +71,25 @@ export function isPlayerCell(val: CellValue | undefined): val is SpawnPlayer {
   return val?.startsWith("player_") ?? false
 }
 
+export function isEnemyCell(val: CellValue | undefined): val is EnemyTool {
+  return val?.startsWith("enemy_") ?? false
+}
+
 export function MapBuilder() {
   const [activeTool, setActiveTool] = useState<Tool>("hand");
   const [map, setMap] = useState(createInitialMap);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settings, setSettings] = useState<SettingsSchema>({
+    sensitivity: [3],
+    // fov: [80],
+    minimapSize: [200],
+    minimapZoom: [1],
+    keyUp: "W",
+    keyDown: "S",
+    keyLeft: "A",
+    keyRight: "D",
+  });
+
   const playerRequired = useMemo(
     () => map.findIndex((cell) => isPlayerCell(cell)) == -1,
     [map],
@@ -124,12 +141,14 @@ export function MapBuilder() {
         tool={activeTool}
         playerRequired={playerRequired}
         onToolChange={setActiveTool}
+        onSettingsClick={() => setSettingsOpen(true)}
       />
       <SidebarInset className="min-w-0 [--navbar-height:theme(spacing.12)]">
         <Header
           gameDisabled={playerRequired}
           map={map}
           columns={COLUMNS}
+          settings={settings}
         />
         <div
           className="data-[tool=hand]:cursor-grab active:data-[tool=hand]:cursor-grabbing"
@@ -143,6 +162,13 @@ export function MapBuilder() {
           />
         </div>
       </SidebarInset>
+      
+      <SettingsDialog
+        open={settingsOpen}
+        settings={settings}
+        onOpenChange={setSettingsOpen}
+        onSettingsChange={setSettings}
+      />
     </SidebarProvider>
   );
 }

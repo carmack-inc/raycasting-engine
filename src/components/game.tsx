@@ -1,6 +1,7 @@
 "use client";
 
-import { CellValue, Map, SpawnPlayer } from "@/components/map/map-builder";
+import { CellValue, isEnemyCell, Map, SpawnPlayer } from "@/components/map/map-builder";
+import { SettingsSchema } from "@/components/settings-dialog";
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
 import { InputManager } from "@/lib/engine/inputManager";
@@ -43,8 +44,9 @@ const POSITION = { x: 3, y: 9 };
 const DIRECTION = { x: 1, y: 0 };
 
 export interface GameProps {
-  map: Map
-  columns: number
+  map: Map;
+  columns: number;
+  settings: SettingsSchema;
 }
 
 const outieToInnerMap: Partial<Record<CellValue, ColorOptions>> = {
@@ -67,28 +69,64 @@ const playerPosMapping: Record<SpawnPlayer, Vec2> = {
   player_bl: { x: -1, y: -1 }
 }
 
-export function Game({ map, columns }: GameProps) {
+function indexToCoordinates(index: number, columns: number) {
+  return { x: index % columns, y: Math.floor(index / columns) };
+}
+
+function buildPlayer(map: Map, columns: number) {
+  const index = map.findIndex((cell) => cell?.startsWith("player_"));
+  const player = map[index] as SpawnPlayer
+
+  return {
+    position: indexToCoordinates(index, columns),
+    direction: playerPosMapping[player],
+  };
+}
+
+function buildEnemies(map: Map, columns: number) {
+  return map
+    .filter((cell) => isEnemyCell(cell))
+    .map((enemy, index) => ({
+      position: indexToCoordinates(index, columns),
+      type: enemy === "enemy_circle" ? "circle" as const : "square" as const,
+    }));
+}
+
+function buildFinals(map: Map, columns: number) {
+  return map
+    .filter((cell) => cell === "end")
+    .map((_, index) => indexToCoordinates(index, columns));
+}
+
+function buildDeaths(map: Map, columns: number) {
+  return map
+    .filter((cell) => cell === "death")
+    .map((_, index) => indexToCoordinates(index, columns));
+}
+
+function buildMap(map: Map, columns: number) {
+  const transformed = map.map((cell) => cell ? (outieToInnerMap[cell] ?? 0) : 0);
+  const innerMap: ColorOptions[][] = [];
+
+  for (let i = 0; i < map.length; i += columns) {
+    innerMap.push(transformed.slice(i, i + columns));
+  }
+
+  return innerMap;
+}
+
+export function Game({ map, columns, settings: outsideSettings }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const engineMap = useMemo(() => {
-    const transformed = map.map((cell) => cell ? (outieToInnerMap[cell] ?? 0) : 0);
-    const innerMap: ColorOptions[][] = [];
+  
+  const engineMap = useMemo(() => buildMap(map, columns), [map, columns]);
+  const objects = useMemo(() => {
+    const player = buildPlayer(map, columns);
+    const enemies = buildEnemies(map, columns);
+    const finals = buildFinals(map, columns);
+    const deaths = buildDeaths(map, columns);
 
-    for (let i = 0; i < map.length; i += columns) {
-      innerMap.push(transformed.slice(i, i + columns));
-    }
-
-    return innerMap;
+    return { player, enemies, finals, deaths };
   }, [map, columns]);
-
-  const mapPlayer = useMemo(() => {
-    const index = map.findIndex((cell) => cell?.startsWith("player_"));
-    const player = map[index] as SpawnPlayer
-
-    return {
-      position: { x: index % columns, y: Math.floor(index / columns) },
-      direction: playerPosMapping[player],
-    };
-  }, [map, columns])
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -110,6 +148,11 @@ export function Game({ map, columns }: GameProps) {
       }
     };
     const input = new InputManager({ UP_KEY, DOWN_KEY, LEFT_KEY, RIGHT_KEY });
+
+    const minimapSize = outsideSettings.minimapSize[0];
+    const minimapZoom = (1 + 5) - outsideSettings.minimapZoom[0];
+    const pixelSize = minimapSize / (minimapZoom * 2);
+
     const settings = new Settings({
       canvas: {
         size: {
@@ -119,12 +162,12 @@ export function Game({ map, columns }: GameProps) {
       },
       map: engineMap,
       minimap: {
-        size: MINIMAP_SIZE,
+        size: minimapSize,
         position: {
-          x: MINIMAP_POSITION_X,
-          y: MINIMAP_POSITION_Y,
+          x: CANVAS_WIDTH - minimapSize - pixelSize / 2,
+          y: CANVAS_HEIGHT - minimapSize - pixelSize / 2,
         },
-        zoom: MINIMAP_ZOOM,
+        zoom: minimapZoom,
       },
     });
 
@@ -144,9 +187,9 @@ export function Game({ map, columns }: GameProps) {
 
     const player = new Player(
       {
-        position: { x: mapPlayer.position.x, y: mapPlayer.position.y },
-        direction: { x: mapPlayer.direction.x, y: mapPlayer.direction.y },
-        rotateSpeed: ROTATE_SPEED,
+        position: { x: objects.player.position.x, y: objects.player.position.y },
+        direction: { x: objects.player.direction.x, y: objects.player.direction.y },
+        rotateSpeed: outsideSettings.sensitivity[0],
         walkSpeed: WALK_SPEED,
       },
       settings

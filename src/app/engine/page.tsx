@@ -1,5 +1,10 @@
 import { MapBuilder } from "@/components/map/map-builder";
+import { Suspense } from "react";
 
 export default function Engine() {
-  return <MapBuilder />
+  return (
+    <Suspense>
+      <MapBuilder />
+    </Suspense>
+  );
 }

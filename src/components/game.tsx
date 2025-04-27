@@ -153,7 +153,7 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
       {
         position: { x: mapPlayer.position.x, y: mapPlayer.position.y },
         direction: { x: mapPlayer.direction.x, y: mapPlayer.direction.y },
-        rotateSpeed: ROTATE_SPEED,
+        rotateSpeed: outsideSettings.sensitivity[0],
         walkSpeed: WALK_SPEED,
       },
       settings

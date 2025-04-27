@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
   sensitivity: z.number().min(1).max(5).array(),
-  fov: z.number().positive().array(),
+  // fov: z.number().positive().array(),
   minimapSize: z.number().min(50).max(200).array(),
   minimapZoom: z.number().min(1).max(5).array(),
   keyUp: z.string(),
@@ -61,14 +61,14 @@ export function SettingsDialog({ settings, onSettingsChange, ...props }: Setting
                     <FormItem>
                       <FormLabel>Sensitivity</FormLabel>
                       <FormControl>
-                        <Slider max={5} step={0.01} onValueChange={onChange} {...field} />
+                        <Slider min={1} max={5} step={0.5} onValueChange={onChange} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="fov"
                   render={({ field: { onChange, ...field } }) => (
@@ -80,7 +80,7 @@ export function SettingsDialog({ settings, onSettingsChange, ...props }: Setting
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                /> */}
 
                 <FormField
                   control={form.control}

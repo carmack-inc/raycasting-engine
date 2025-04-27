@@ -76,8 +76,8 @@ export function MapBuilder() {
   const [map, setMap] = useState(createInitialMap);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settings, setSettings] = useState<SettingsSchema>({
-    sensitivity: [1],
-    fov: [80],
+    sensitivity: [3],
+    // fov: [80],
     minimapSize: [200],
     minimapZoom: [1],
     keyUp: "W",

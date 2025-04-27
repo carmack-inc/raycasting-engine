@@ -1,10 +1,7 @@
 "use client";
 
-import { BoxesIcon, HouseIcon, SettingsIcon } from "lucide-react";
-import { useState } from "react";
+import { HouseIcon, SettingsIcon } from "lucide-react";
 
-import { SettingsDialog } from "@/components/settings-dialog";
-import { AssetsDialog } from "@/components/assets-dialog";
 import {
   SidebarGroup,
   SidebarMenu,
@@ -17,7 +14,7 @@ interface NavMainProps {
 }
 
 export function NavMain({ onSettingsClick }: NavMainProps) {
-  const [assetsOpen, setAssetsOpen] = useState(false)
+  // const [assetsOpen, setAssetsOpen] = useState(false)
 
   return (
     <>
@@ -40,7 +37,7 @@ export function NavMain({ onSettingsClick }: NavMainProps) {
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          <SidebarMenuItem>
+          {/* <SidebarMenuItem>
             <SidebarMenuButton 
               tooltip="Assets"
               onClick={()=> setAssetsOpen(true)}
@@ -48,11 +45,11 @@ export function NavMain({ onSettingsClick }: NavMainProps) {
               <BoxesIcon />
               <span>Assets</span>
             </SidebarMenuButton>
-          </SidebarMenuItem>
+          </SidebarMenuItem> */}
         </SidebarMenu>
       </SidebarGroup>
 
-      <AssetsDialog open={assetsOpen} onOpenChange={setAssetsOpen} />
+      {/* <AssetsDialog open={assetsOpen} onOpenChange={setAssetsOpen} /> */}
     </>
   )
 }

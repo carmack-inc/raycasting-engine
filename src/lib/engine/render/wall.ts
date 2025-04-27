@@ -13,7 +13,7 @@ export class Wall extends Renderable {
   render(gameState: GameState, rays: RayInfo[], buffer: number[]) {
     const MAP = this.settings.map;
     for (let x = 0; x < rays.length; x++) {
-      const { lineStart, lineEnd } = this.calculteLineHeight(rays[x].perpDist);
+      const { lineStart, lineEnd } = this.calculateLineHeight(rays[x].perpDist);
 
        let color = colorsVector[0]
        if(!this.isCellOutOfBounds(rays[x].mapHit)){
@@ -31,13 +31,14 @@ export class Wall extends Renderable {
     }
   }
 
-  calculteLineHeight(perpDist: number): { lineStart: number; lineEnd: number } {
+  calculateLineHeight(perpDist: number): {lineHeight: number, lineStart: number; lineEnd: number } {
     const CANVAS_HEIGHT = this.settings.canvasHeight;
     const lineHeight = Math.floor(CANVAS_HEIGHT / perpDist);
     const lineStart = -lineHeight / 2 + CANVAS_HEIGHT / 2;
     const lineEnd = lineHeight / 2 + CANVAS_HEIGHT / 2;
 
     return {
+      lineHeight,
       lineStart: lineStart < 0 ? 0 : Math.floor(lineStart),
       lineEnd:
         lineEnd >= CANVAS_HEIGHT ? CANVAS_HEIGHT - 1 : Math.floor(lineEnd),

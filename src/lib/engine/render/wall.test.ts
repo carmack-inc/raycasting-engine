@@ -26,12 +26,12 @@ function generateSettings(): GenerateSettingsType {
   };
 }
 
-describe("Function calculteLineHeight", () => {
+describe("Function calculateLineHeight", () => {
   it("should calculate correct line start, end and height when the wall is far as possible to be a visivel pixel", () => {
     const settings = new Settings(generateSettings());
     const wall = new Wall(settings);
 
-    const {lineHeight, lineStart, lineEnd } = wall.calculteLineHeight(
+    const {lineHeight, lineStart, lineEnd } = wall.calculateLineHeight(
       settings.canvasHeight
     );
     expect(lineHeight).toBe(1)
@@ -43,7 +43,7 @@ describe("Function calculteLineHeight", () => {
     const settings = new Settings(generateSettings());
     const wall = new Wall(settings);
 
-    const {lineHeight, lineStart, lineEnd } = wall.calculteLineHeight(1);
+    const {lineHeight, lineStart, lineEnd } = wall.calculateLineHeight(1);
     expect(lineHeight).toBe(settings.canvasHeight)
     expect(lineStart).toBe(0);
     expect(lineEnd).toBe(settings.canvasHeight - 1);
@@ -53,7 +53,7 @@ describe("Function calculteLineHeight", () => {
     const settings = new Settings(generateSettings());
     const wall = new Wall(settings);
 
-    const {lineHeight, lineStart, lineEnd } = wall.calculteLineHeight(0.5);
+    const {lineHeight, lineStart, lineEnd } = wall.calculateLineHeight(0.5);
     expect(lineHeight).toBe(settings.canvasHeight * 2)
     expect(lineStart).toBe(0);
     expect(lineEnd).toBe(settings.canvasHeight - 1);

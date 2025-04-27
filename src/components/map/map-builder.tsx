@@ -11,7 +11,7 @@ import { useMemo, useState } from "react";
 export type Tool = GeneralTool | EssentialTool | EnemyTool | WallTool
 export type GeneralTool = "hand" | "pivot" | "eraser"
 export type EssentialTool = "player" | "end" | "death"
-export type EnemyTool = "enemy_gladiator"
+export type EnemyTool = "enemy_square" | "enemy_circle"
 export type WallTool = "wall_blue" | "wall_red" | "wall_green" | "wall_cyan" | "wall_magenta" | "wall_yellow"
 
 export type SpawnPlayer = "player_t" | "player_tr" | "player_tl"

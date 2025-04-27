@@ -1,7 +1,7 @@
 "use client";
 
 import { isPlayerCell, type CellValue, type SpawnPlayer } from "@/components/map/map-builder";
-import { BrickWallIcon, CircleIcon, DiamondIcon, FlagIcon, LucideIcon, LucideProps, PersonStandingIcon, SkullIcon, SwordIcon } from "lucide-react";
+import { BrickWallIcon, CircleIcon, DiamondIcon, FlagIcon, LucideIcon, LucideProps, PersonStandingIcon, SkullIcon, SquareIcon, SwordIcon } from "lucide-react";
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -54,7 +54,8 @@ const icons: Record<CellValue, { icon: LucideIcon, class?: string }> = {
   "player_br": { icon: PersonStandingIcon },
   "player_bl": { icon: PersonStandingIcon },
   "death": { icon: SkullIcon },
-  "enemy_gladiator": { icon: SwordIcon },
+  "enemy_square": { icon: SquareIcon },
+  "enemy_circle": { icon: CircleIcon },
   "wall_blue": { icon: BrickWallIcon, class: "text-blue-600 dark:text-blue-400" },
   "wall_red": { icon: BrickWallIcon, class: "text-red-600 dark:text-red-400" },
   "wall_green": { icon: BrickWallIcon, class: "text-emerald-600 dark:text-emerald-400" },

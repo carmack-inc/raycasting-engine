@@ -2,6 +2,8 @@
 
 import { CellValue, isEnemyCell, Map, SpawnPlayer } from "@/components/map/map-builder";
 import { SettingsSchema } from "@/components/settings-dialog";
+import { Button } from "@/components/ui/button";
+import { DialogFooter } from "@/components/ui/dialog";
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
 import { InputManager } from "@/lib/engine/inputManager";
@@ -11,6 +13,7 @@ import { Player } from "@/lib/engine/player";
 import { Renderer } from "@/lib/engine/render/renderer";
 import { Settings } from "@/lib/engine/settings";
 import { Vec2 } from "@/lib/engine/vector";
+import { ExpandIcon } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 
 const MAP: ColorOptions[][] = [
@@ -209,11 +212,20 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
   }, []);
 
   return (
-    <canvas
-      className="bg-black rounded-md"
-      width={CANVAS_WIDTH}
-      height={CANVAS_HEIGHT}
-      ref={canvasRef}
-    />
+    <div className="space-y-4">
+      <canvas
+        className="bg-black rounded-md"
+        width={CANVAS_WIDTH}
+        height={CANVAS_HEIGHT}
+        ref={canvasRef}
+      />
+
+      <DialogFooter>
+        <Button variant="outline" size="sm">
+          <ExpandIcon />
+          Fullscreen
+        </Button>
+      </DialogFooter>
+    </div>
   );
 }

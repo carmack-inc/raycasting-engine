@@ -2,6 +2,9 @@
 
 import { CellValue, isEnemyCell, Map, SpawnPlayer } from "@/components/map/map-builder";
 import { SettingsSchema } from "@/components/settings-dialog";
+import { Button } from "@/components/ui/button";
+import { DialogFooter } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
 import { InputManager } from "@/lib/engine/inputManager";
@@ -11,6 +14,7 @@ import { Player } from "@/lib/engine/player";
 import { Renderer } from "@/lib/engine/render/renderer";
 import { Settings } from "@/lib/engine/settings";
 import { Vec2 } from "@/lib/engine/vector";
+import { ExpandIcon } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 
 const MAP: ColorOptions[][] = [
@@ -117,6 +121,7 @@ function buildMap(map: Map, columns: number) {
 
 export function Game({ map, columns, settings: outsideSettings }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { toast } = useToast();
   
   const engineMap = useMemo(() => buildMap(map, columns), [map, columns]);
   const objects = useMemo(() => {
@@ -128,25 +133,51 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
     return { player, enemies, finals, deaths };
   }, [map, columns]);
 
+  async function requestPointerLock() {
+    if (!canvasRef.current) {
+      return;
+    }
+
+    if (!document.pointerLockElement) {
+      try {
+        await canvasRef.current.requestPointerLock({
+          unadjustedMovement: true,
+        });
+      } catch (error) {
+        if (error instanceof Error && error.name === "NotSupportedError") {
+          await canvasRef.current.requestPointerLock();
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
+  async function requestFullscreen() {
+    if (!canvasRef.current) {
+      return;
+    }
+
+    if (!document.fullscreenElement) {
+      try {
+        await canvasRef.current.requestFullscreen();
+        await requestPointerLock();
+      } catch (error) {
+        if (error instanceof Error) {
+          toast({
+            variant: "destructive",
+            title: "Error attempting to enable fullscreen mode",
+            description: error.message,
+          });
+        }
+      }
+    }
+  }
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas == null) return;
 
-    const requestPointer = async () => {
-      if (!document.pointerLockElement) {
-        try {
-          await canvas.requestPointerLock({
-            unadjustedMovement: true,
-          });
-        } catch (error) {
-          if (error instanceof Error && error.name === "NotSupportedError") {
-            await canvas.requestPointerLock();
-          } else {
-            throw error;
-          }
-        }
-      }
-    };
     const input = new InputManager({ UP_KEY, DOWN_KEY, LEFT_KEY, RIGHT_KEY });
 
     const minimapSize = outsideSettings.minimapSize[0];
@@ -171,19 +202,14 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
       },
     });
 
-    canvas.addEventListener("click", requestPointer);
+    const onMouseMove = (event: MouseEvent) => input.produceMouseInput(event.movementX);
+    const onKeydown = (event: KeyboardEvent) => input.registerKeyboardInput(event.key);
+    const onKeyup = (event: KeyboardEvent) => input.deregisterKeyboardInput(event.key);
 
-    canvas.addEventListener("mousemove", (event) => {
-      input.produceMouseInput(event.movementX);
-    });
-
-    document.addEventListener("keydown", (event) => {
-      input.registerKeyboardInput(event.key);
-    });
-
-    document.addEventListener("keyup", (event) => {
-      input.deregisterKeyboardInput(event.key);
-    });
+    canvas.addEventListener("click", requestPointerLock);
+    canvas.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("keydown", onKeydown);
+    document.addEventListener("keyup", onKeyup);
 
     const player = new Player(
       {
@@ -204,16 +230,28 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
     //start(canvas);
     return () => {
       core.stop();
-      canvas.removeEventListener("click", requestPointer);
+      canvas.removeEventListener("click", requestPointerLock);
+      canvas.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("keydown", onKeydown);
+      document.removeEventListener("keyup", onKeyup);
     };
-  }, []);
+  }, []); 
 
   return (
-    <canvas
-      className="bg-black rounded-md"
-      width={CANVAS_WIDTH}
-      height={CANVAS_HEIGHT}
-      ref={canvasRef}
-    />
+    <div className="space-y-4">
+      <canvas
+        className="bg-black rounded-md"
+        width={CANVAS_WIDTH}
+        height={CANVAS_HEIGHT}
+        ref={canvasRef}
+      />
+
+      <DialogFooter>
+        <Button variant="outline" size="sm" onClick={requestFullscreen}>
+          <ExpandIcon />
+          Fullscreen
+        </Button>
+      </DialogFooter>
+    </div>
   );
 }

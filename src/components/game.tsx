@@ -1,6 +1,6 @@
 "use client";
 
-import { CellValue, Map, SpawnPlayer } from "@/components/map/map-builder";
+import { CellValue, isEnemyCell, Map, SpawnPlayer } from "@/components/map/map-builder";
 import { SettingsSchema } from "@/components/settings-dialog";
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
@@ -69,28 +69,64 @@ const playerPosMapping: Record<SpawnPlayer, Vec2> = {
   player_bl: { x: -1, y: -1 }
 }
 
+function indexToCoordinates(index: number, columns: number) {
+  return { x: index % columns, y: Math.floor(index / columns) };
+}
+
+function buildPlayer(map: Map, columns: number) {
+  const index = map.findIndex((cell) => cell?.startsWith("player_"));
+  const player = map[index] as SpawnPlayer
+
+  return {
+    position: indexToCoordinates(index, columns),
+    direction: playerPosMapping[player],
+  };
+}
+
+function buildEnemies(map: Map, columns: number) {
+  return map
+    .filter((cell) => isEnemyCell(cell))
+    .map((enemy, index) => ({
+      position: indexToCoordinates(index, columns),
+      type: enemy === "enemy_circle" ? "circle" as const : "square" as const,
+    }));
+}
+
+function buildFinals(map: Map, columns: number) {
+  return map
+    .filter((cell) => cell === "end")
+    .map((_, index) => indexToCoordinates(index, columns));
+}
+
+function buildDeaths(map: Map, columns: number) {
+  return map
+    .filter((cell) => cell === "death")
+    .map((_, index) => indexToCoordinates(index, columns));
+}
+
+function buildMap(map: Map, columns: number) {
+  const transformed = map.map((cell) => cell ? (outieToInnerMap[cell] ?? 0) : 0);
+  const innerMap: ColorOptions[][] = [];
+
+  for (let i = 0; i < map.length; i += columns) {
+    innerMap.push(transformed.slice(i, i + columns));
+  }
+
+  return innerMap;
+}
+
 export function Game({ map, columns, settings: outsideSettings }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const engineMap = useMemo(() => {
-    const transformed = map.map((cell) => cell ? (outieToInnerMap[cell] ?? 0) : 0);
-    const innerMap: ColorOptions[][] = [];
+  
+  const engineMap = useMemo(() => buildMap(map, columns), [map, columns]);
+  const objects = useMemo(() => {
+    const player = buildPlayer(map, columns);
+    const enemies = buildEnemies(map, columns);
+    const finals = buildFinals(map, columns);
+    const deaths = buildDeaths(map, columns);
 
-    for (let i = 0; i < map.length; i += columns) {
-      innerMap.push(transformed.slice(i, i + columns));
-    }
-
-    return innerMap;
+    return { player, enemies, finals, deaths };
   }, [map, columns]);
-
-  const mapPlayer = useMemo(() => {
-    const index = map.findIndex((cell) => cell?.startsWith("player_"));
-    const player = map[index] as SpawnPlayer
-
-    return {
-      position: { x: index % columns, y: Math.floor(index / columns) },
-      direction: playerPosMapping[player],
-    };
-  }, [map, columns])
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -151,8 +187,8 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
 
     const player = new Player(
       {
-        position: { x: mapPlayer.position.x, y: mapPlayer.position.y },
-        direction: { x: mapPlayer.direction.x, y: mapPlayer.direction.y },
+        position: { x: objects.player.position.x, y: objects.player.position.y },
+        direction: { x: objects.player.direction.x, y: objects.player.direction.y },
         rotateSpeed: outsideSettings.sensitivity[0],
         walkSpeed: WALK_SPEED,
       },

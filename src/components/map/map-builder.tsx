@@ -71,6 +71,10 @@ export function isPlayerCell(val: CellValue | undefined): val is SpawnPlayer {
   return val?.startsWith("player_") ?? false
 }
 
+export function isEnemyCell(val: CellValue | undefined): val is EnemyTool {
+  return val?.startsWith("enemy_") ?? false
+}
+
 export function MapBuilder() {
   const [activeTool, setActiveTool] = useState<Tool>("hand");
   const [map, setMap] = useState(createInitialMap);

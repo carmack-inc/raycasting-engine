@@ -35,7 +35,7 @@ export class Player {
     return this._rotateSpeed;
   }
 
-  private actions: Record<ActionsFlags, Function>;
+  private actions: Record<ActionsFlags, () => void>;
 
   constructor(options: GeneratePlayerType, settings: Settings) {
     this._position = options.position;
@@ -47,7 +47,7 @@ export class Player {
     this._settings = settings;
   }
 
-  createActions(): Record<ActionsFlags, Function> {
+  createActions(): Record<ActionsFlags, () => void> {
     return {
       UP_KEY: () => {
         this._movementVector.x += this._direction.x;

@@ -1,33 +1,44 @@
 import { RequiredBadge } from "@/components/required-badge";
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { DiamondIcon, FlagIcon, SkullIcon } from "lucide-react";
+import { RadioGroupItem } from "@radix-ui/react-radio-group";
+import { FlagIcon, PersonStandingIcon, SkullIcon } from "lucide-react";
 
-export function NavEssential() {
+interface NavEssentialProps {
+  playerRequired: boolean
+}
+
+export function NavEssential({ playerRequired }: NavEssentialProps) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Essential</SidebarGroupLabel>
 
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Spawn player">
-            <DiamondIcon />
-            <span>Spawn player</span>
-          </SidebarMenuButton>
-          <RequiredBadge />
+          <RadioGroupItem value="player" asChild>
+            <SidebarMenuButton tooltip="Player">
+              <PersonStandingIcon />
+              <span>Player</span>
+            </SidebarMenuButton>
+          </RadioGroupItem>
+          {playerRequired && <RequiredBadge />}
         </SidebarMenuItem>
 
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip="End">
-            <FlagIcon />
-            <span>End</span>
-          </SidebarMenuButton>
+          <RadioGroupItem value="end" asChild>
+            <SidebarMenuButton tooltip="End">
+              <FlagIcon />
+              <span>End</span>
+            </SidebarMenuButton>
+          </RadioGroupItem>
         </SidebarMenuItem>
 
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Death">
-            <SkullIcon />
-            <span>Death</span>
-          </SidebarMenuButton>
+          <RadioGroupItem value="death" asChild>
+            <SidebarMenuButton tooltip="Death">
+              <SkullIcon />
+              <span>Death</span>
+            </SidebarMenuButton>
+          </RadioGroupItem>
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>

@@ -1,5 +1,10 @@
 "use client";
 
+import { CellValue, isEnemyCell, Map, SpawnPlayer } from "@/components/map/map-builder";
+import { SettingsSchema } from "@/components/settings-dialog";
+import { Button } from "@/components/ui/button";
+import { DialogFooter } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
 import { InputManager } from "@/lib/engine/inputManager";
@@ -8,7 +13,9 @@ import { CanvasPaint } from "@/lib/engine/paint";
 import { Player } from "@/lib/engine/player";
 import { Renderer } from "@/lib/engine/render/renderer";
 import { Settings } from "@/lib/engine/settings";
-import { useEffect, useRef } from "react";
+import { Vec2 } from "@/lib/engine/vector";
+import { ExpandIcon } from "lucide-react";
+import { useEffect, useMemo, useRef } from "react";
 
 const MAP: ColorOptions[][] = [
   [0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
@@ -40,29 +47,143 @@ const ROTATE_SPEED = 3;
 const POSITION = { x: 3, y: 9 };
 const DIRECTION = { x: 1, y: 0 };
 
-export function Game() {
+export interface GameProps {
+  map: Map;
+  columns: number;
+  settings: SettingsSchema;
+}
+
+const outieToInnerMap: Partial<Record<CellValue, ColorOptions>> = {
+  wall_red: 1,
+  wall_green: 2,
+  wall_blue: 3,
+  wall_cyan: 5,
+  wall_magenta: 6,
+  wall_yellow: 7,
+}
+
+const playerPosMapping: Record<SpawnPlayer, Vec2> = {
+  player_l: { x: -1, y: 0 },
+  player_tl: { x: -1, y: 1 },
+  player_t: { x: 0, y: 1 },
+  player_tr: { x: 1, y: 1 },
+  player_r: { x: 1, y: 0 },
+  player_br: { x: 1, y: -1 },
+  player_b: { x: 0, y: -1 },
+  player_bl: { x: -1, y: -1 }
+}
+
+function indexToCoordinates(index: number, columns: number) {
+  return { x: index % columns, y: Math.floor(index / columns) };
+}
+
+function buildPlayer(map: Map, columns: number) {
+  const index = map.findIndex((cell) => cell?.startsWith("player_"));
+  const player = map[index] as SpawnPlayer
+
+  return {
+    position: indexToCoordinates(index, columns),
+    direction: playerPosMapping[player],
+  };
+}
+
+function buildEnemies(map: Map, columns: number) {
+  return map
+    .filter((cell) => isEnemyCell(cell))
+    .map((enemy, index) => ({
+      position: indexToCoordinates(index, columns),
+      type: enemy === "enemy_circle" ? "circle" as const : "square" as const,
+    }));
+}
+
+function buildFinals(map: Map, columns: number) {
+  return map
+    .filter((cell) => cell === "end")
+    .map((_, index) => indexToCoordinates(index, columns));
+}
+
+function buildDeaths(map: Map, columns: number) {
+  return map
+    .filter((cell) => cell === "death")
+    .map((_, index) => indexToCoordinates(index, columns));
+}
+
+function buildMap(map: Map, columns: number) {
+  const transformed = map.map((cell) => cell ? (outieToInnerMap[cell] ?? 0) : 0);
+  const innerMap: ColorOptions[][] = [];
+
+  for (let i = 0; i < map.length; i += columns) {
+    innerMap.push(transformed.slice(i, i + columns));
+  }
+
+  return innerMap;
+}
+
+export function Game({ map, columns, settings: outsideSettings }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { toast } = useToast();
+  
+  const engineMap = useMemo(() => buildMap(map, columns), [map, columns]);
+  const objects = useMemo(() => {
+    const player = buildPlayer(map, columns);
+    const enemies = buildEnemies(map, columns);
+    const finals = buildFinals(map, columns);
+    const deaths = buildDeaths(map, columns);
+
+    return { player, enemies, finals, deaths };
+  }, [map, columns]);
+
+  async function requestPointerLock() {
+    if (!canvasRef.current) {
+      return;
+    }
+
+    if (!document.pointerLockElement) {
+      try {
+        await canvasRef.current.requestPointerLock({
+          unadjustedMovement: true,
+        });
+      } catch (error) {
+        if (error instanceof Error && error.name === "NotSupportedError") {
+          await canvasRef.current.requestPointerLock();
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
+  async function requestFullscreen() {
+    if (!canvasRef.current) {
+      return;
+    }
+
+    if (!document.fullscreenElement) {
+      try {
+        await canvasRef.current.requestFullscreen();
+        await requestPointerLock();
+      } catch (error) {
+        if (error instanceof Error) {
+          toast({
+            variant: "destructive",
+            title: "Error attempting to enable fullscreen mode",
+            description: error.message,
+          });
+        }
+      }
+    }
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas == null) return;
 
-    const requestPointer = async () => {
-      if (!document.pointerLockElement) {
-        try {
-          await canvas.requestPointerLock({
-            unadjustedMovement: true,
-          });
-        } catch (error: any) {
-          if (error.name === "NotSupportedError") {
-            await canvas.requestPointerLock();
-          } else {
-            throw error;
-          }
-        }
-      }
-    };
     const input = new InputManager({ UP_KEY, DOWN_KEY, LEFT_KEY, RIGHT_KEY });
+
+    const minimapSize = outsideSettings.minimapSize[0];
+    const minimapZoom = (1 + 5) - outsideSettings.minimapZoom[0];
+    const pixelSize = minimapSize / (minimapZoom * 2);
+
     const settings = new Settings({
       canvas: {
         size: {
@@ -70,36 +191,31 @@ export function Game() {
           h: CANVAS_HEIGHT,
         },
       },
-      map: MAP,
+      map: engineMap,
       minimap: {
-        size: MINIMAP_SIZE,
+        size: minimapSize,
         position: {
-          x: MINIMAP_POSITION_X,
-          y: MINIMAP_POSITION_Y,
+          x: CANVAS_WIDTH - minimapSize - pixelSize / 2,
+          y: CANVAS_HEIGHT - minimapSize - pixelSize / 2,
         },
-        zoom: MINIMAP_ZOOM,
+        zoom: minimapZoom,
       },
     });
 
-    canvas.addEventListener("click", requestPointer);
+    const onMouseMove = (event: MouseEvent) => input.produceMouseInput(event.movementX);
+    const onKeydown = (event: KeyboardEvent) => input.registerKeyboardInput(event.key);
+    const onKeyup = (event: KeyboardEvent) => input.deregisterKeyboardInput(event.key);
 
-    canvas.addEventListener("mousemove", (event) => {
-      input.produceMouseInput(event.movementX);
-    });
-
-    document.addEventListener("keydown", (event) => {
-      input.registerKeyboardInput(event.key);
-    });
-
-    document.addEventListener("keyup", (event) => {
-      input.deregisterKeyboardInput(event.key);
-    });
+    canvas.addEventListener("click", requestPointerLock);
+    canvas.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("keydown", onKeydown);
+    document.addEventListener("keyup", onKeyup);
 
     const player = new Player(
       {
-        position: { x: POSITION.x, y: POSITION.y },
-        direction: { x: DIRECTION.x, y: DIRECTION.y },
-        rotateSpeed: ROTATE_SPEED,
+        position: { x: objects.player.position.x, y: objects.player.position.y },
+        direction: { x: objects.player.direction.x, y: objects.player.direction.y },
+        rotateSpeed: outsideSettings.sensitivity[0],
         walkSpeed: WALK_SPEED,
       },
       settings
@@ -114,15 +230,28 @@ export function Game() {
     //start(canvas);
     return () => {
       core.stop();
-      canvas.removeEventListener("click", requestPointer);
+      canvas.removeEventListener("click", requestPointerLock);
+      canvas.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("keydown", onKeydown);
+      document.removeEventListener("keyup", onKeyup);
     };
-  }, []);
+  }, []); 
+
   return (
-    <canvas
-      className="bg-black rounded-md"
-      width={CANVAS_WIDTH}
-      height={CANVAS_HEIGHT}
-      ref={canvasRef}
-    />
+    <div className="space-y-4">
+      <canvas
+        className="bg-black rounded-md"
+        width={CANVAS_WIDTH}
+        height={CANVAS_HEIGHT}
+        ref={canvasRef}
+      />
+
+      <DialogFooter>
+        <Button variant="outline" size="sm" onClick={requestFullscreen}>
+          <ExpandIcon />
+          Fullscreen
+        </Button>
+      </DialogFooter>
+    </div>
   );
 }

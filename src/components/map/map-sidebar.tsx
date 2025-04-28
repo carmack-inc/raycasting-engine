@@ -3,11 +3,12 @@
 import { JoystickIcon } from "lucide-react";
 import Link from 'next/link';
 import type React from "react";
+import { RadioGroup } from "@radix-ui/react-radio-group"
 
-import { NavEntity } from "@/components/nav-entity";
+import { NavEnemies } from "@/components/nav-enemies";
 import { NavEssential } from "@/components/nav-essential";
 import { NavMain } from "@/components/nav-main";
-import { NavObjects } from "@/components/nav-objects";
+import { NavTools } from "@/components/nav-tools";
 import { NavWalls } from "@/components/nav-walls";
 import {
   Sidebar,
@@ -17,8 +18,16 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar";
+import type { Tool } from "@/components/map/map-builder";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type MapSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  tool: Tool;
+  playerRequired: boolean;
+  onToolChange: (tool: Tool) => void;
+  onSettingsClick: () => void;
+}
+
+export function MapSidebar({ tool, playerRequired, onToolChange, onSettingsClick, ...props }: MapSidebarProps) {
   return (
     <Sidebar variant="inset" collapsible="icon" {...props}>
       <SidebarHeader>
@@ -34,11 +43,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain />
-        <NavEssential />
-        <NavEntity />
-        <NavObjects />
-        <NavWalls />
+        <NavMain onSettingsClick={onSettingsClick} />
+
+        <RadioGroup
+          orientation="vertical"
+          value={tool}
+          onValueChange={onToolChange}
+        >
+          <NavTools />
+          <NavEssential playerRequired={playerRequired} />
+          <NavEnemies />
+          <NavWalls />
+        </RadioGroup>
       </SidebarContent>
     </Sidebar>
   )

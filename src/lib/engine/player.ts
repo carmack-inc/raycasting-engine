@@ -92,7 +92,6 @@ export class Player {
     }
 
     if(movementMapY >= 0 && movementMapY < MAP.length){
-      console.log( movementMapY)
       if (MAP[movementMapY][Math.floor(this._position.x)] == 0){
         this._position.y -= this._movementVector.y * this._walkSpeed;
       }

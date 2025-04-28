@@ -38,17 +38,9 @@ describe("Function getCell", () => {
 describe("Function getSideRays", () => {
   it("should return the correct rays most left and right based in the player direction", () => {
     const settings = new Settings(generateSettings());
-    const player = new Player(
-      {
-        position: { x: 0, y: 0 },
-        direction: { x: 0, y: 1 },
-        rotateSpeed: 3,
-        walkSpeed: 0.05,
-      },
-      settings
-    );
+    const playerDirection = { x: 0, y: 1 };
     const floor = new Floor(settings);
-    const { mostLeftRay, mostRightRay } = floor.getSideRays(player);
+    const { mostLeftRay, mostRightRay } = floor.getSideRays(playerDirection);
     expect(mostLeftRay).toEqual({ x: -1, y: 1 });
     expect(mostRightRay).toEqual({ x: 1, y: 1 });
   });
@@ -81,19 +73,11 @@ describe("Function getRowVector", () => {
 describe("Function getRowPosition", () => {
   it("should return the correct start point to scanline in the maximum distance (world space)", () => {
     const settings = new Settings(generateSettings());
-    const player = new Player(
-      {
-        position: { x: 0, y: 0 },
-        direction: { x: 0, y: 1 },
-        rotateSpeed: 3,
-        walkSpeed: 0.05,
-      },
-      settings
-    );
+    const playerPosition = { x: 0, y: 0 }
     const floor = new Floor(settings);
     const maxDistance = settings.canvasHeight / 2; // y = vanishingPoint - 1
     const rowPositionStartPoint = floor.getRowPosition({
-      player,
+      playerPosition,
       rowVector: { x: -maxDistance, y: maxDistance },
     });
     expect(rowPositionStartPoint).toEqual({ x: -maxDistance, y: -maxDistance });
@@ -101,22 +85,14 @@ describe("Function getRowPosition", () => {
 
   it("should return the correct start point to scanline in the minimum distance (world space)", () => {
     const settings = new Settings(generateSettings());
-    const player = new Player(
-      {
-        position: { x: 0, y: 0 },
-        direction: { x: 0, y: 1 },
-        rotateSpeed: 3,
-        walkSpeed: 0.05,
-      },
-      settings
-    );
+    const playerPosition = { x: 0, y: 0 }
     const floor = new Floor(settings);
     const minDistance = 1; // y = 0
     const rowPositionStartPoint = floor.getRowPosition({
-      player,
-      rowVector: { x: -1, y: 1 },
+      playerPosition,
+      rowVector: { x: -minDistance, y: minDistance },
     });
-    expect(rowPositionStartPoint).toEqual({ x: -1, y: -1 });
+    expect(rowPositionStartPoint).toEqual({ x: -minDistance, y: -minDistance });
   });
 });
 

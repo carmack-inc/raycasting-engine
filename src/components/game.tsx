@@ -7,6 +7,8 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
+import { Enemy } from "@/lib/engine/enemy";
+import { GameModal } from "@/lib/engine/gameModal";
 import { InputManager } from "@/lib/engine/inputManager";
 import { CanvasPaint } from "@/lib/engine/paint";
 
@@ -20,7 +22,7 @@ import { useEffect, useMemo, useRef } from "react";
 const MAP: ColorOptions[][] = [
   [0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 7, 0, 2],
+  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
@@ -29,7 +31,7 @@ const MAP: ColorOptions[][] = [
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+  [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2],
 ];
 const CANVAS_WIDTH = 640; // USER PREFERENCE
 const CANVAS_HEIGHT = 480; // USER PREFERENCE
@@ -89,23 +91,34 @@ function buildPlayer(map: Map, columns: number) {
 
 function buildEnemies(map: Map, columns: number) {
   return map
-    .filter((cell) => isEnemyCell(cell))
-    .map((enemy, index) => ({
-      position: indexToCoordinates(index, columns),
-      type: enemy === "enemy_circle" ? "circle" as const : "square" as const,
-    }));
+    .map((enemy, index) => {
+      if (!isEnemyCell(enemy)) {
+        return undefined;
+      }
+
+      return {
+        position: indexToCoordinates(index, columns),
+        type: enemy === "enemy_circle" ? "Circle" as const : "Square" as const,
+      }
+    })
+    .filter(Boolean)
 }
+
 
 function buildFinals(map: Map, columns: number) {
   return map
-    .filter((cell) => cell === "end")
-    .map((_, index) => indexToCoordinates(index, columns));
+    .map((cell, index) => {
+      return cell === "end" ? indexToCoordinates(index, columns) : undefined;
+    })
+    .filter(Boolean);
 }
 
 function buildDeaths(map: Map, columns: number) {
   return map
-    .filter((cell) => cell === "death")
-    .map((_, index) => indexToCoordinates(index, columns));
+    .map((cell, index) => {
+      return cell === "death" ? indexToCoordinates(index, columns) : undefined;
+    })
+    .filter(Boolean);
 }
 
 function buildMap(map: Map, columns: number) {
@@ -221,10 +234,30 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
       settings
     );
 
-    const canvasPaint = new CanvasPaint(canvas);
+    console.log(objects.enemies)
 
+    const enemies = objects.enemies.filter(enemy => enemy != undefined).map(enemy => new Enemy(
+      {
+        position: { x: enemy.position.x, y: enemy.position.y},
+        texture: enemy.type
+      },
+        settings
+      )
+    );
+
+    const goals = objects.finals.filter(goal => goal != undefined).map(goal => {
+      return {
+        x: goal.x,
+        y: goal.y
+      }
+    })
+    // const enemy1 = new Enemy({position:{x: 10 , y: 9}, texture: "Square"}, settings)
+    // const enemy2 = new Enemy({position:{x: 10 , y: 3}, texture: "Circle"}, settings)
+
+    const canvasPaint = new CanvasPaint(canvas);   
+    const gameModal = new GameModal(player, enemies, goals)
     const renderer = new Renderer(settings, canvasPaint);
-    const core = new Core(player, input, renderer);
+    const core = new Core(gameModal, input, renderer);
     core.start();
 
     //start(canvas);

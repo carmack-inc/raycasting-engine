@@ -1,5 +1,5 @@
+import { Entity } from "./entity";
 import { Paint } from "../paint";
-import { Player } from "../player";
 import { RayCast } from "../raycast";
 import { Settings } from "../settings";
 import { Ceil } from "./ceil";
@@ -7,6 +7,8 @@ import { Floor } from "./floor";
 import { Minimap } from "./minimap";
 import { Renderable } from "./renderable";
 import { Wall } from "./wall";
+import { GameState } from "../gameModal";
+
 
 export class Renderer {
   private _settings: Settings;
@@ -16,6 +18,7 @@ export class Renderer {
   private _floor: Renderable;
   private _ceil: Renderable;
   private _wall: Renderable;
+  private _entity: Renderable;
   private _buffer: number[];
   public get buffer(): number[] {
     return this._buffer;
@@ -29,6 +32,7 @@ export class Renderer {
     this._floor = new Floor(settings);
     this._ceil = new Ceil(settings);
     this._wall = new Wall(settings);
+    this._entity = new Entity(settings)
     this._buffer = [];
     this.resetBuffer();
   }
@@ -45,16 +49,59 @@ export class Renderer {
     }
   }
 
-  render(player: Player) {
+  loseBuffer() {
+    const canvasWidth = this._settings.canvasWidth;
+    const canvasHeight = this._settings.canvasHeight;
+    for (let i = 0; i < canvasHeight * canvasWidth; i++) {
+      
+      const index = i * 4;
+      const bw = (this._buffer[index] + this._buffer[index + 1] +this._buffer[index + 2])/3
+      this._buffer[index] = bw;
+      this._buffer[index + 1] = bw;
+      this._buffer[index + 2] = bw;
+      this._buffer[index + 3] = 255;
+    }
+  }
+
+  winBuffer() {
+    const canvasWidth = this._settings.canvasWidth;
+    const canvasHeight = this._settings.canvasHeight;
+    for (let i = 0; i < canvasHeight * canvasWidth; i++) {
+      
+      const index = i * 4;
+      const bw = (this._buffer[index] + this._buffer[index + 1] +this._buffer[index + 2])/3
+      this._buffer[index] = bw;
+      this._buffer[index + 1] = bw;
+      this._buffer[index + 2] = 0;
+      this._buffer[index + 3] = 255;
+    }
+  }
+
+  render(gameState: GameState) {
     this.resetBuffer();
     const raysInfo = this._raycast.castAllRays(
-      player.position,
-      player.direction
+      gameState.player.position,
+      gameState.player.direction,
     );
-    this._floor.render(player, raysInfo, this.buffer);
-    this._ceil.render(player, raysInfo, this.buffer);
-    this._wall.render(player, raysInfo, this.buffer);
+    this._floor.render(gameState, raysInfo, this.buffer);
+    this._ceil.render(gameState, raysInfo, this.buffer);
+    this._wall.render(gameState, raysInfo, this.buffer);
+    this._entity.render(gameState, raysInfo, this.buffer);
     this._paint.paintBuffer(this.buffer);
-    this._minimap.renderMinimap(player.position, raysInfo);
-  }
+    this._minimap.renderMinimap(gameState.player.position, raysInfo);
+    if(gameState.game.state == "lose"){
+      this.loseBuffer();
+      this._paint.paintBuffer(this.buffer);
+    }
+
+    if(gameState.game.state == "win"){
+      this.winBuffer();
+      this._paint.paintBuffer(this.buffer);
+    }
+    
+  } 
+
+
+    
+  
 }

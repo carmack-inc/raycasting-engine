@@ -45,19 +45,20 @@ export class Enemy {
       y: -(playerPosition.y - this._position.y)
     }
     this._movementVector = Vector.normalizeVector(mov)
+    const movementMapX = Math.floor(this._position.x + this._movementVector.x * this._walkSpeed)
+    const movementMapY = Math.floor(this.position.y - this._movementVector.y * this._walkSpeed)
 
-    if (
-      MAP[Math.floor(this._position.y)][
-        Math.floor(this._position.x + this._movementVector.x * this._walkSpeed)
-      ] == 0
-    )
-      this._position.x += this._movementVector.x * this._walkSpeed;
+    if(movementMapX >= 0 && movementMapX < MAP[0].length){
+      if (MAP[Math.floor(this._position.y)][movementMapX] == 0){
+        this._position.x += this._movementVector.x * this._walkSpeed;
+      }
+    }
 
-    if (
-      MAP[
-        Math.floor(this.position.y - this._movementVector.y * this._walkSpeed)
-      ][Math.floor(this._position.x)] == 0
-    )
-      this._position.y -= this._movementVector.y * this._walkSpeed; // NEGATIVE Y AXIS IN CANVAS
+    if(movementMapY >= 0 && movementMapY < MAP.length){
+      console.log( movementMapY)
+      if (MAP[movementMapY][Math.floor(this._position.x)] == 0){
+        this._position.y -= this._movementVector.y * this._walkSpeed;
+      }
+    }
   }
 }

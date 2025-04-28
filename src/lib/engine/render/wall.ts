@@ -24,7 +24,7 @@ export class Wall extends Renderable {
         this.drawOutOfMapColumn(x, lineStart, lineEnd, buffer)
       } else {
         for (let y = lineStart; y <= lineEnd; y++) {
-          let texY = this.getTextureCoordenateY(texturePositionY)
+          const texY = this.getTextureCoordenateY(texturePositionY)
           texturePositionY += textureStepY
           const mapIndex = MAP[rays[x].mapHit.y][rays[x].mapHit.x];
           let color = colorsVector[mapIndex]

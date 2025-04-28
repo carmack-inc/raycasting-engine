@@ -1,4 +1,4 @@
-import { Player } from "../player";
+import { GameState } from "../gameModal";
 import { RayInfo } from "../raycast";
 import { Settings } from "../settings";
 import { Vec2, Vector } from "../vector";
@@ -9,8 +9,8 @@ export class Floor extends Renderable {
     super(settings);
   }
 
-  render(player: Player, rays: RayInfo[], buffer: number[]) {
-    const { mostLeftRay, mostRightRay } = this.getSideRays(player);
+  render(gameState: GameState, rays: RayInfo[], buffer: number[]) {
+    const { mostLeftRay, mostRightRay } = this.getSideRays(gameState.player.direction);
     const canvasWidth = this.settings.canvasWidth;
     const canvasHeight = this.settings.canvasHeight;
     const playerViewHeight = canvasHeight / 2;
@@ -24,7 +24,7 @@ export class Floor extends Renderable {
       });
       // transform in world space
       const rowPosition = this.getRowPosition({
-        player,
+        playerPosition: gameState.player.position,
         rowVector,
       });
       const rowStep = this.getRowStep({
@@ -39,30 +39,43 @@ export class Floor extends Renderable {
         rowPosition.y -= rowStep.y;
 
         if (!this.isCellOutOfBounds(cell)) {
-          if ((cell.y + cell.x) % 2 == 0) {
+          let isGoalCell = false;
+          gameState.goals.forEach(goal => {
+            isGoalCell = cell.x == goal.x && cell.y == goal.y
+          })
+          if(isGoalCell){
             this.setPixelBuffer(
               buffer,
               { x, y },
-              { r: 255, g: 255, b: 255, a: 255 }
+              { r: 255, g: 255, b: 0, a: 255 }
             );
-          } else {
-            this.setPixelBuffer(buffer, { x, y }, { r: 0, g: 0, b: 0, a: 255 });
+          } else{
+            if ((cell.y + cell.x) % 2 == 0) {
+              this.setPixelBuffer(
+                buffer,
+                { x, y },
+                { r: 255, g: 255, b: 255, a: 255 }
+              );
+            } else {
+              this.setPixelBuffer(buffer, { x, y }, { r: 0, g: 0, b: 0, a: 255 });
+            }
           }
+          
         }
       }
     }
   }
 
-  getSideRays(player: Player): { mostLeftRay: Vec2; mostRightRay: Vec2 } {
-    const perpRayDir = Vector.findPerpVector(player.direction);
+  getSideRays(playerDirection: Vec2): { mostLeftRay: Vec2; mostRightRay: Vec2 } {
+    const perpRayDir = Vector.findPerpVector(playerDirection);
     const mostLeftRay = {
-      x: perpRayDir.x + player.direction.x,
-      y: perpRayDir.y + player.direction.y,
+      x: perpRayDir.x + playerDirection.x,
+      y: perpRayDir.y + playerDirection.y,
     };
 
     const mostRightRay = {
-      x: -perpRayDir.x + player.direction.x,
-      y: -perpRayDir.y + player.direction.y,
+      x: -perpRayDir.x + playerDirection.x,
+      y: -perpRayDir.y + playerDirection.y,
     };
 
     return { mostLeftRay, mostRightRay };
@@ -89,15 +102,15 @@ export class Floor extends Renderable {
   }
 
   getRowPosition({
-    player,
+    playerPosition,
     rowVector,
   }: {
-    player: Player;
+    playerPosition: Vec2;
     rowVector: Vec2;
   }): Vec2 {
     return {
-      x: player.position.x + rowVector.x,
-      y: player.position.y - rowVector.y,
+      x: playerPosition.x + rowVector.x,
+      y: playerPosition.y - rowVector.y,
     };
   }
 

@@ -7,6 +7,8 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { ColorOptions } from "@/lib/engine/colors";
 import { Core } from "@/lib/engine/core";
+import { Enemy } from "@/lib/engine/enemy";
+import { GameModal } from "@/lib/engine/gameModal";
 import { InputManager } from "@/lib/engine/inputManager";
 import { CanvasPaint } from "@/lib/engine/paint";
 
@@ -20,16 +22,16 @@ import { useEffect, useMemo, useRef } from "react";
 const MAP: ColorOptions[][] = [
   [0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 7, 0, 2],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 1, 1, 1, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [0, 1, 1, 1, 0, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+  [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2],
 ];
 const CANVAS_WIDTH = 640; // USER PREFERENCE
 const CANVAS_HEIGHT = 480; // USER PREFERENCE
@@ -220,11 +222,13 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
       },
       settings
     );
+    const enemy1 = new Enemy({position:{x: 10 , y: 9}, texture: "Square"}, settings)
+    const enemy2 = new Enemy({position:{x: 10 , y: 3}, texture: "Circle"}, settings)
 
-    const canvasPaint = new CanvasPaint(canvas);
-
+    const canvasPaint = new CanvasPaint(canvas);   
+    const gameModal = new GameModal(player, [enemy1, enemy2], [{x:15,y:2}])
     const renderer = new Renderer(settings, canvasPaint);
-    const core = new Core(player, input, renderer);
+    const core = new Core(gameModal, input, renderer);
     core.start();
 
     //start(canvas);

@@ -1,4 +1,4 @@
-import { Player } from "../player";
+import { GameState } from "../gameModal";
 import { RayInfo } from "../raycast";
 import { Settings } from "../settings";
 import { Vec2 } from "../vector";
@@ -12,7 +12,7 @@ export abstract class Renderable {
   constructor(settings: Settings) {
     this._settings = settings;
   }
-  abstract render(player: Player, rays: RayInfo[], buffer: number[]): void;
+  abstract render(gameState: GameState, rays: RayInfo[], buffer: number[]): void;
   setPixelBuffer(
     buffer: number[],
     position: Vec2,

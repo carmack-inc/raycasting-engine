@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { Player } from "../player";
 import { RayInfo } from "../raycast";
 import { GenerateSettingsType, Settings } from "../settings";
 import { Renderable } from "./renderable";
+import { GameState } from "../gameModal";
 
 function generateSettings(): GenerateSettingsType {
   return {
@@ -32,7 +32,7 @@ class TestRender extends Renderable {
   constructor(settings: Settings) {
     super(settings);
   }
-  render(player: Player, rays: RayInfo[], buffer: number[]): void {}
+  render(gameState: GameState, rays: RayInfo[], buffer: number[]): void {}
 }
 describe("Function isCellOutOfBounds", () => {
   it("should return true when cell is outside the map's bounds", () => {

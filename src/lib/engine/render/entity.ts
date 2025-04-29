@@ -18,22 +18,20 @@ export class Entity extends Renderable{
       return distB - distA // reverse order
     })
     for(let i = 0; i< gameState.enemies.length; i++){
-      this.renderSprite(gameState.enemies[i], gameState, rays, buffer);
+      this.renderEnemySprite(gameState.enemies[i], gameState, rays, buffer);
     }
   }
 
-  renderSprite(enemy: EnemyType, gameState: GameState, rays: RayInfo[], buffer: number[]){
-    const spritePositionCamera = this.translateSpritePosition(enemy.position, gameState.player.position);
-    const transform = this.worldToCameraTransform(spritePositionCamera, gameState.player.direction)
-    if(transform.y == 0) return;
+  renderEnemySprite(enemy: EnemyType, gameState: GameState, rays: RayInfo[], buffer: number[]){
+    const transform = this.worldToCameraTransform(enemy.position, gameState.player.position, gameState.player.direction)
+
+    if(transform.y <= 0) return;
 
     const spriteWidthCenter = this.calculateCenterOfSprite(transform)
     const height = this.calculateHeight(transform)
     const width = this.calculateWidth(transform, spriteWidthCenter)
     for(let x = width.start; x < width.end; x++){
-      if(transform.y > 0 && 
-        x > 0 &&
-        x < this.settings.canvasWidth &&
+      if(x > 0 && x < this.settings.canvasWidth &&
         transform.y < rays[x].perpDist)
       for(let y = height.start; y < height.end; y++) 
       {
@@ -53,20 +51,14 @@ export class Entity extends Renderable{
   isInCircle(x: number, y: number, xCenter: number, yCenter: number, radius: number){
     const term1 = x - xCenter
     const term2 = y - yCenter
-
-    return (term1 * term1) + (term2 * term2) < (radius * radius)
+    return (term1 * term1) + (term2 * term2) <= (radius * radius)
   }
 
-  // RENAME THAT FUNCTION
-
-  translateSpritePosition(spritePosition: Vec2, playerPosition: Vec2){
-    return  {
+  worldToCameraTransform(spritePosition: Vec2, playerPosition: Vec2, playerDirection: Vec2): Vec2{
+    const spritePos = {
       x:spritePosition.x - playerPosition.x,
       y:spritePosition.y - playerPosition.y,
     }
-  }
-
-  worldToCameraTransform(spritePos: Vec2, playerDirection: Vec2): Vec2{
     const plane = Vector.findPerpVector(playerDirection)
     const invDet = 1 / ((-plane.x) * (-playerDirection.y) - playerDirection.x * plane.y); 
     return {
@@ -79,7 +71,7 @@ export class Entity extends Renderable{
     return Math.floor((this.settings.canvasWidth / 2) * (1 + positionInCamera.x / positionInCamera.y))
   }
 
-  calculateHeight(positionInCamera: Vec2){
+  calculateHeight(positionInCamera: Vec2): {start: number, end: number}{
     const canvasHeight = this.settings.canvasHeight
     const spriteHeight = Math.abs(Math.floor(canvasHeight / (positionInCamera.y))); 
     const start = -spriteHeight / 2 + canvasHeight / 2;
@@ -91,7 +83,7 @@ export class Entity extends Renderable{
     }
   }
 
-  calculateWidth(positionInCamera: Vec2, spriteCenter: number){
+  calculateWidth(positionInCamera: Vec2, spriteCenter: number): {start: number, end: number}{
     const canvasHeight = this.settings.canvasHeight
     const canvasWidth = this.settings.canvasWidth
     const spriteWidth = Math.abs(Math.floor(canvasHeight / (positionInCamera.y))); 

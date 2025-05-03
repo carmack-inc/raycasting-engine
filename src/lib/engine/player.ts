@@ -100,15 +100,9 @@ export class Player {
   }
 
   rotate(mouseOffsetX: number) {
-    const oldDir = { x: this._direction.x, y: this._direction.y };
     const rotateAngle =
       -(mouseOffsetX / this._settings.canvasWidth) * this._rotateSpeed;
-
-    this._direction.x =
-      this._direction.x * Math.cos(rotateAngle) -
-      this.direction.y * Math.sin(rotateAngle);
-    this._direction.y =
-      oldDir.x * Math.sin(rotateAngle) +
-      this._direction.y * Math.cos(rotateAngle);
+      
+    this._direction = Vector.applyRotateVector(this._direction, rotateAngle)
   }
 }

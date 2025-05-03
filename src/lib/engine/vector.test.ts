@@ -101,4 +101,10 @@ describe("Function applyRotateVector", () => {
     expect(rotatedVector180degree.x).toBeCloseTo(0);
     expect(rotatedVector180degree.y).toBeCloseTo(0);
   });
+
+  it("should not apply correct rotate for a zero radian", () => {
+    const rotatedVector90degree = Vector.applyRotateVector({ x: 1, y: 0 }, 0);
+    expect(rotatedVector90degree.x).toBeCloseTo(1);
+    expect(rotatedVector90degree.y).toBeCloseTo(0);
+  });
 });

@@ -101,8 +101,10 @@ export class Player {
 
   rotate(mouseOffsetX: number) {
     const rotateAngle =
-      -(mouseOffsetX / this._settings.canvasWidth) * this._rotateSpeed;
-      
+      -(mouseOffsetX / this._settings.canvasWidth) * this._rotateSpeed; 
+      // negative because rotate matrix radian is calculated counterclockwise
+      // and mouseOffset is clockwise
+
     this._direction = Vector.applyRotateVector(this._direction, rotateAngle)
   }
 }

@@ -1,3 +1,4 @@
+import { Vec2 } from "./vector";
 import { ColorOptions } from "./colors";
 
 export type GenerateSettingsType = {
@@ -56,5 +57,13 @@ export class Settings {
     this._minimapPosition = options.minimap.position;
     this._minimapZoom = options.minimap.zoom;
     this._pixelSize = options.minimap.size / (options.minimap.zoom * 2);
+  }
+
+  isCellOutOfBounds(cell: Vec2) {
+    if (cell.y > this._map.length - 1) return true;
+    if (cell.x > this._map[0].length - 1) return true;
+    if (cell.y < 0) return true;
+    if (cell.x < 0) return true;
+    return false;
   }
 }

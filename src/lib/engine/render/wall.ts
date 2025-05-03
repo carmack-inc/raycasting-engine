@@ -22,7 +22,7 @@ export class Wall extends Renderable {
       const textureStepY = this.getTextureStepY(lineHeight, textureHeight);
       let texturePositionY = this.getTexturePositionY(lineHeight, lineStart, textureStepY)
 
-      if(this.isCellOutOfBounds(rays[x].mapHit)){
+      if(this.settings.isCellOutOfBounds(rays[x].mapHit)){
         this.drawOutOfMapColumn(x, lineStart, lineEnd, buffer)
       } else {
         for (let y = lineStart; y <= lineEnd; y++) {

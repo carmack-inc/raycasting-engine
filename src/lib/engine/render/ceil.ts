@@ -39,7 +39,7 @@ export class Ceil extends Renderable {
         rowPosition.x += rowStep.x;
         rowPosition.y -= rowStep.y;
 
-        if (!this.isCellOutOfBounds(cell)) {
+        if (!this.settings.isCellOutOfBounds(cell)) {
           if ((cell.y + cell.x) % 2 == 0) {
             this.setPixelBuffer(
               buffer,

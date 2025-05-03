@@ -41,3 +41,29 @@ describe("Constructor", () => {
     );
   });
 });
+
+describe("Function isCellOutOfBounds", () => {
+  it("should return true when cell is outside the map's bounds", () => {
+    const settings = new Settings(generateSettings());
+    const o1 = settings.isCellOutOfBounds({ x: 3, y: 3 });
+    const o2 = settings.isCellOutOfBounds({ x: 3, y: 1 });
+    const o3 = settings.isCellOutOfBounds({ x: 1, y: 3 });
+    const o4 = settings.isCellOutOfBounds({ x: -1, y: 3 });
+    const o5 = settings.isCellOutOfBounds({ x: 3, y: -1 });
+    const o6 = settings.isCellOutOfBounds({ x: -1, y: -1 });
+    expect(o1).toBe(true);
+    expect(o2).toBe(true);
+    expect(o3).toBe(true);
+    expect(o4).toBe(true);
+    expect(o5).toBe(true);
+    expect(o6).toBe(true);
+  });
+
+  it("should return false when cell is inside the map's bounds", () => {
+    const settings = new Settings(generateSettings());
+    const i1 = settings.isCellOutOfBounds({ x: 0, y: 0 });
+    const i2 = settings.isCellOutOfBounds({ x: 2, y: 1 });
+    expect(i1).toBe(false);
+    expect(i2).toBe(false);
+  });
+});

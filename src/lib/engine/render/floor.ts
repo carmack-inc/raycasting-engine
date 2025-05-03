@@ -38,7 +38,7 @@ export class Floor extends Renderable {
         rowPosition.x += rowStep.x;
         rowPosition.y -= rowStep.y;
 
-        if (!this.isCellOutOfBounds(cell)) {
+        if (!this.settings.isCellOutOfBounds(cell)) {
           let isGoalCell = false;
           gameState.goals.forEach(goal => {
             isGoalCell = cell.x == goal.x && cell.y == goal.y

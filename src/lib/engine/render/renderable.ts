@@ -25,12 +25,4 @@ export abstract class Renderable {
     buffer[index + 2] = values.b;
     buffer[index + 3] = values.a;
   }
-
-  isCellOutOfBounds(cell: Vec2) {
-    if (cell.y > this._settings.map.length - 1) return true;
-    if (cell.x > this._settings.map[0].length - 1) return true;
-    if (cell.y < 0) return true;
-    if (cell.x < 0) return true;
-    return false;
-  }
 }

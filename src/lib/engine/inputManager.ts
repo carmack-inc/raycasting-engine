@@ -9,16 +9,18 @@ export class InputManager {
 
   constructor(input: GenerateInputType) {
     this._keySet = new Set<ActionsFlags>();
+    this._validKeys = this.createValidKeys(input)
+    this._mouseOffsetX = 0;
+  }
 
-    this._validKeys = Object.fromEntries(
-      (Object.entries(input) as [string, ActionsFlags][]).map<
-        [ActionsFlags, string]
+  createValidKeys(input: GenerateInputType): Record<string, ActionsFlags>{
+    return Object.fromEntries(
+      (Object.entries(input) as [ActionsFlags, string][]).map<
+        [string, ActionsFlags]
       >(([action, key]) => {
-        return [key, action];
+        return [key.toUpperCase(), action];
       })
     ) as Record<string, ActionsFlags>;
-
-    this._mouseOffsetX = 0;
   }
 
   registerKeyboardInput(key: string) {

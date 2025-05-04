@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { RayCast } from "./raycast";
-import { GenerateSettingsType, Settings } from "./settings";
-import { ColorOptions } from "./colors";
+import { GenerateSettingsType, Settings } from "./configuration/settings";
+import { ColorOptions } from "./configuration/colors";
 
 function generateSettings(map: ColorOptions[][]): GenerateSettingsType {
   return {

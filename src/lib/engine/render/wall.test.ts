@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { GenerateSettingsType, Settings } from "../settings";
+import { GenerateSettingsType, Settings } from "../configuration/settings";
 import { Wall } from "./wall";
 import { RayInfo } from "../raycast";
 

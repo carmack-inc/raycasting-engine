@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Paint } from "../paint";
-import { Vec2 } from "../vector";
-import { GenerateSettingsType, Settings } from "../settings";
+import { Vec2 } from "../utils/vector";
+import { GenerateSettingsType, Settings } from "../configuration/settings";
 import { Renderer } from "./renderer";
 
 function generateSettings(): GenerateSettingsType {

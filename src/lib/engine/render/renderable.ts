@@ -1,7 +1,7 @@
-import { GameState } from "../gameModal";
+import { GameState } from "../logic/gameModal";
 import { RayInfo } from "../raycast";
-import { Settings } from "../settings";
-import { Vec2 } from "../vector";
+import { Settings } from "../configuration/settings";
+import { Vec2 } from "../utils/vector";
 
 export abstract class Renderable {
   private _settings: Settings;

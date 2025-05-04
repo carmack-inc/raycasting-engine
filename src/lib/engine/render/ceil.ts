@@ -1,7 +1,7 @@
-import { GameState } from "../gameModal";
+import { GameState } from "../logic/gameModal";
 import { RayInfo } from "../raycast";
-import { Settings } from "../settings";
-import { Vec2, Vector } from "../vector";
+import { Settings } from "../configuration/settings";
+import { Vec2, Vector } from "../utils/vector";
 import { Renderable } from "./renderable";
 
 export class Ceil extends Renderable {

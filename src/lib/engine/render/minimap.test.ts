@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { GenerateSettingsType, Settings } from "../settings";
-import { Vec2 } from "../vector";
-import { colorsVector, RGBVector } from "../colors";
+import { GenerateSettingsType, Settings } from "../configuration/settings";
+import { Vec2 } from "../utils/vector";
+import { colorsVector, RGBVector } from "../configuration/colors";
 import { Minimap } from "./minimap";
 import { Paint } from "../paint";
 

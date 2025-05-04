@@ -1,9 +1,9 @@
-import { Settings } from "../settings";
+import { Settings } from "../configuration/settings";
 import { Renderable } from "./renderable";
-import { Color, colorsVector } from "../colors";
+import { Color, colorsVector } from "../configuration/colors";
 import { RayInfo } from "../raycast";
-import { GameState } from "../gameModal";
-import { Vec2 } from "../vector";
+import { GameState } from "../logic/gameModal";
+import { Vec2 } from "../utils/vector";
 
 
 export class Wall extends Renderable {

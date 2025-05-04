@@ -1,5 +1,5 @@
-import { Settings } from "./settings";
-import { Vec2, Vector } from "./vector";
+import { Settings } from "../configuration/settings";
+import { Vec2, Vector } from "../utils/vector";
 
 export type TextureType = "Square" | "Circle"
 export type GenerateEnemyType = {

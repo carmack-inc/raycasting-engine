@@ -1,13 +1,13 @@
 import { Entity } from "./entity";
 import { Paint } from "../paint";
 import { RayCast } from "../raycast";
-import { Settings } from "../settings";
+import { Settings } from "../configuration/settings";
 import { Ceil } from "./ceil";
 import { Floor } from "./floor";
 import { Minimap } from "./minimap";
 import { Renderable } from "./renderable";
 import { Wall } from "./wall";
-import { GameState } from "../gameModal";
+import { GameState } from "../logic/gameModal";
 
 
 export class Renderer {

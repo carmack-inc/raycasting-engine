@@ -1,4 +1,4 @@
-import { Vec2 } from "./vector";
+import { Vec2 } from "../utils/vector";
 import { ColorOptions } from "./colors";
 
 export type GenerateSettingsType = {

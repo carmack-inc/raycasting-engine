@@ -1,8 +1,8 @@
-import { colorsVector, RGBVector, RGB } from "../colors";
+import { colorsVector, RGBVector, RGB } from "../configuration/colors";
 import { Paint } from "../paint";
 import { RayInfo } from "../raycast";
-import { Settings } from "../settings";
-import { Vec2 } from "../vector";
+import { Settings } from "../configuration/settings";
+import { Vec2 } from "../utils/vector";
 
 export class Minimap {
   private _settings: Settings;

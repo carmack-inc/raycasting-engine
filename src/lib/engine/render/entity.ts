@@ -1,8 +1,8 @@
-import { EnemyType, GameState } from "../gameModal";
+import { EnemyType, GameState } from "../logic/gameModal";
 import { RayInfo } from "../raycast";
 import { Renderable } from "./renderable";
-import { Settings } from "../settings";
-import { Vec2, Vector } from "../vector";
+import { Settings } from "../configuration/settings";
+import { Vec2, Vector } from "../utils/vector";
 
 export class Entity extends Renderable{
   constructor(settings: Settings){

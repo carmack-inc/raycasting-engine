@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Player } from "./player";
-import { GenerateSettingsType, Settings } from "./settings";
+import { GenerateSettingsType, Settings } from "../configuration/settings";
 
 function generateSettings(): GenerateSettingsType {
   return {

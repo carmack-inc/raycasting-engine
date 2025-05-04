@@ -1,6 +1,6 @@
-import { ActionsFlags } from "./inputManager";
-import { Settings } from "./settings";
-import { Vector } from "./vector";
+import { ActionsFlags } from "../controllers/inputManager";
+import { Settings } from "../configuration/settings";
+import { Vector } from "../utils/vector";
 
 export type GeneratePlayerType = {
   position: {
@@ -83,7 +83,7 @@ export class Player {
     });
 
     const movementMapX = Math.floor(this._position.x + this._movementVector.x * this._walkSpeed)
-    const movementMapY = Math.floor(this.position.y - this._movementVector.y * this._walkSpeed)
+    const movementMapY = Math.floor(this._position.y - this._movementVector.y * this._walkSpeed)
     // NEGATIVE Y AXIS IN CANVAS
     if(movementMapX >= 0 && movementMapX < MAP[0].length){
       if (MAP[Math.floor(this._position.y)][movementMapX] == 0){

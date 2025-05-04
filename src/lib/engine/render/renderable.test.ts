@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { RayInfo } from "../raycast";
-import { GenerateSettingsType, Settings } from "../settings";
+import { GenerateSettingsType, Settings } from "../configuration/settings";
 import { Renderable } from "./renderable";
-import { GameState } from "../gameModal";
+import { GameState } from "../logic/gameModal";
 
 function generateSettings(): GenerateSettingsType {
   return {

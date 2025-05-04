@@ -1,5 +1,5 @@
-import { GameModal } from "./gameModal";
-import { InputManager } from "./inputManager";
+import { GameModal } from "./logic/gameModal";
+import { InputManager } from "./controllers/inputManager";
 import { Renderer } from "./render/renderer";
 
 export class Core {

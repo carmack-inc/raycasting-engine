@@ -1,5 +1,5 @@
 import { Entity } from "./entity";
-import { GenerateSettingsType, Settings } from "../settings";
+import { GenerateSettingsType, Settings } from "../configuration/settings";
 import { describe, expect, it } from "vitest";
 
 function generateSettings(canvasSize?: {w: number, h: number}): GenerateSettingsType {

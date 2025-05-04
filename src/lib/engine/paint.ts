@@ -1,4 +1,4 @@
-import { Vec2 } from "./vector";
+import { Vec2 } from "./utils/vector";
 
 export interface Paint {
   paintRect(pos: Vec2, size: { w: number; h: number }, color: string): void;

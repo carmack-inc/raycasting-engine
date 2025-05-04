@@ -1,10 +1,10 @@
 "use client";
 
 import { isPlayerCell, type CellValue, type SpawnPlayer } from "@/components/map/map-builder";
-import { BrickWallIcon, CircleIcon, DiamondIcon, FlagIcon, LucideIcon, LucideProps, PersonStandingIcon, SkullIcon, SquareIcon, SwordIcon } from "lucide-react";
-import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { BrickWallIcon, CircleIcon, FlagIcon, LucideIcon, LucideProps, PersonStandingIcon, SkullIcon, SquareIcon } from "lucide-react";
+import { memo } from "react";
 
 type MapCellProps = {
   id: number;

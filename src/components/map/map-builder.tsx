@@ -5,7 +5,7 @@ import { MapContent } from "@/components/map/map-content";
 import { MapSidebar } from "@/components/map/map-sidebar";
 import { SettingsDialog, SettingsSchema } from "@/components/settings-dialog";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { ColorOptions } from "@/lib/engine/colors";
+import { ColorOptions } from "@/lib/engine/configuration/colors";
 import { maps } from "@/lib/map-examples";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";

@@ -1,5 +1,5 @@
-import { ColorOptions } from "@/lib/engine/colors";
-import { Vec2 } from "@/lib/engine/vector";
+import { ColorOptions } from "@/lib/engine/configuration/colors";
+import { Vec2 } from "@/lib/engine/utils/vector";
 
 interface ExampleMap {
   name: string;

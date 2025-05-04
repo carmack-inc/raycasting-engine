@@ -8,6 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 interface NavMainProps {
   onSettingsClick: () => void;
@@ -21,9 +22,11 @@ export function NavMain({ onSettingsClick }: NavMainProps) {
       <SidebarGroup>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Home">
-              <HouseIcon />
-              <span>Home</span>
+            <SidebarMenuButton tooltip="Home" asChild>
+              <Link href="/">
+                <HouseIcon />
+                <span>Home</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
 

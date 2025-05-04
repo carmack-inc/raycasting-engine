@@ -14,13 +14,13 @@ export class Collision{
     // NEGATIVE Y AXIS IN CANVAS
     if(movementMapX >= 0 && movementMapX < this._settings.map[0].length){
       if (this._settings.map[Math.floor(position.y)][movementMapX] == 0){
-        newPosition.x = (direction.x * speed) + position.x;
+        newPosition.x = position.x + (direction.x * speed);
       }
     }
 
     if(movementMapY >= 0 && movementMapY < this._settings.map.length){
       if (this._settings.map[movementMapY][Math.floor(position.x)] == 0){
-        newPosition.y = (direction.y * speed) + position.y;
+        newPosition.y = position.y - (direction.y * speed);
       }
     }
 

@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { GenerateSettingsType, Settings } from "../settings";
-import { Player } from "../player";
+import { GenerateSettingsType, Settings } from "../configuration/settings";
 import { Floor } from "./floor";
 
 function generateSettings(): GenerateSettingsType {

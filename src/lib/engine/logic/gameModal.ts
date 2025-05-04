@@ -1,7 +1,7 @@
-import { Enemy, TextureType } from "./enemy";
-import { ActionsFlags } from "./inputManager";
-import { Player } from "./player";
-import { Vec2 } from "./vector";
+import { Enemy, TextureType } from "../entities/enemy";
+import { ActionsFlags } from "../controllers/inputManager";
+import { Player } from "../entities/player";
+import { Vec2 } from "../utils/vector";
 
 type State = "running" | "lose" | "win";
 export type EnemyType = {

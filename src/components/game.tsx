@@ -5,17 +5,16 @@ import { SettingsSchema } from "@/components/settings-dialog";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { ColorOptions } from "@/lib/engine/colors";
+import { ColorOptions } from "@/lib/engine/configuration/colors";
+import { Settings } from "@/lib/engine/configuration/settings";
+import { InputManager } from "@/lib/engine/controllers/inputManager";
 import { Core } from "@/lib/engine/core";
-import { Enemy } from "@/lib/engine/enemy";
-import { GameModal } from "@/lib/engine/gameModal";
-import { InputManager } from "@/lib/engine/inputManager";
+import { Enemy } from "@/lib/engine/entities/enemy";
+import { Player } from "@/lib/engine/entities/player";
+import { GameModal } from "@/lib/engine/logic/gameModal";
 import { CanvasPaint } from "@/lib/engine/paint";
-
-import { Player } from "@/lib/engine/player";
 import { Renderer } from "@/lib/engine/render/renderer";
-import { Settings } from "@/lib/engine/settings";
-import { Vec2 } from "@/lib/engine/vector";
+import { Vec2 } from "@/lib/engine/utils/vector";
 import { ExpandIcon } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 
@@ -234,8 +233,6 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
       settings
     );
 
-    console.log(objects.enemies)
-
     const enemies = objects.enemies.filter(enemy => enemy != undefined).map(enemy => new Enemy(
       {
         position: { x: enemy.position.x, y: enemy.position.y},
@@ -251,8 +248,6 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
         y: goal.y
       }
     })
-    // const enemy1 = new Enemy({position:{x: 10 , y: 9}, texture: "Square"}, settings)
-    // const enemy2 = new Enemy({position:{x: 10 , y: 3}, texture: "Circle"}, settings)
 
     const canvasPaint = new CanvasPaint(canvas);   
     const gameModal = new GameModal(player, enemies, goals)
@@ -260,7 +255,6 @@ export function Game({ map, columns, settings: outsideSettings }: GameProps) {
     const core = new Core(gameModal, input, renderer);
     core.start();
 
-    //start(canvas);
     return () => {
       core.stop();
       canvas.removeEventListener("click", requestPointerLock);

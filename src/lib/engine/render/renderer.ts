@@ -1,13 +1,13 @@
 import { Entity } from "./entity";
 import { Paint } from "../paint";
 import { RayCast } from "../raycast";
-import { Settings } from "../settings";
+import { Settings } from "../configuration/settings";
 import { Ceil } from "./ceil";
 import { Floor } from "./floor";
 import { Minimap } from "./minimap";
 import { Renderable } from "./renderable";
 import { Wall } from "./wall";
-import { GameState } from "../gameModal";
+import { GameState } from "../logic/gameModal";
 
 
 export class Renderer {
@@ -20,9 +20,6 @@ export class Renderer {
   private _wall: Renderable;
   private _entity: Renderable;
   private _buffer: number[];
-  public get buffer(): number[] {
-    return this._buffer;
-  }
 
   constructor(settings: Settings, paint: Paint) {
     this._settings = settings;
@@ -34,69 +31,61 @@ export class Renderer {
     this._wall = new Wall(settings);
     this._entity = new Entity(settings)
     this._buffer = [];
-    this.resetBuffer();
+    this.resetBuffer(this._settings.canvasWidth,this._settings.canvasHeight, this._buffer);
   }
 
-  resetBuffer() {
-    const canvasWidth = this._settings.canvasWidth;
-    const canvasHeight = this._settings.canvasHeight;
+  resetBuffer(canvasWidth: number, canvasHeight: number, buffer: number[]) {
     for (let i = 0; i < canvasHeight * canvasWidth; i++) {
       const index = i * 4;
-      this._buffer[index] = 0;
-      this._buffer[index + 1] = 0;
-      this._buffer[index + 2] = 0;
-      this._buffer[index + 3] = 255;
+      buffer[index] = 0;
+      buffer[index + 1] = 0;
+      buffer[index + 2] = 0;
+      buffer[index + 3] = 255;
     }
   }
 
-  loseBuffer() {
-    const canvasWidth = this._settings.canvasWidth;
-    const canvasHeight = this._settings.canvasHeight;
+  loseBuffer(canvasWidth: number, canvasHeight: number, buffer: number[]) {
     for (let i = 0; i < canvasHeight * canvasWidth; i++) {
-      
       const index = i * 4;
-      const bw = (this._buffer[index] + this._buffer[index + 1] +this._buffer[index + 2])/3
-      this._buffer[index] = bw;
-      this._buffer[index + 1] = bw;
-      this._buffer[index + 2] = bw;
-      this._buffer[index + 3] = 255;
+      const bw = (buffer[index] + buffer[index + 1] +buffer[index + 2])/3
+      buffer[index] = bw;
+      buffer[index + 1] = bw;
+      buffer[index + 2] = bw;
+      buffer[index + 3] = 255;
     }
   }
 
-  winBuffer() {
-    const canvasWidth = this._settings.canvasWidth;
-    const canvasHeight = this._settings.canvasHeight;
+  winBuffer(canvasWidth: number, canvasHeight: number, buffer: number[]) {
     for (let i = 0; i < canvasHeight * canvasWidth; i++) {
-      
       const index = i * 4;
-      const bw = (this._buffer[index] + this._buffer[index + 1] +this._buffer[index + 2])/3
-      this._buffer[index] = bw;
-      this._buffer[index + 1] = bw;
-      this._buffer[index + 2] = 0;
-      this._buffer[index + 3] = 255;
+      const bw = (buffer[index] + buffer[index + 1] +buffer[index + 2])/3
+      buffer[index] = bw;
+      buffer[index + 1] = bw;
+      buffer[index + 2] = 0;
+      buffer[index + 3] = 255;
     }
   }
 
   render(gameState: GameState) {
-    this.resetBuffer();
+    this.resetBuffer(this._settings.canvasWidth,this._settings.canvasHeight, this._buffer);
     const raysInfo = this._raycast.castAllRays(
       gameState.player.position,
       gameState.player.direction,
     );
-    this._floor.render(gameState, raysInfo, this.buffer);
-    this._ceil.render(gameState, raysInfo, this.buffer);
-    this._wall.render(gameState, raysInfo, this.buffer);
-    this._entity.render(gameState, raysInfo, this.buffer);
-    this._paint.paintBuffer(this.buffer);
+    this._floor.render(gameState, raysInfo, this._buffer);
+    this._ceil.render(gameState, raysInfo, this._buffer);
+    this._wall.render(gameState, raysInfo, this._buffer);
+    this._entity.render(gameState, raysInfo, this._buffer);
+    this._paint.paintBuffer(this._buffer);
     this._minimap.renderMinimap(gameState.player.position, raysInfo);
     if(gameState.game.state == "lose"){
-      this.loseBuffer();
-      this._paint.paintBuffer(this.buffer);
+      this.loseBuffer(this._settings.canvasWidth,this._settings.canvasHeight, this._buffer);
+      this._paint.paintBuffer(this._buffer);
     }
 
     if(gameState.game.state == "win"){
-      this.winBuffer();
-      this._paint.paintBuffer(this.buffer);
+      this.winBuffer(this._settings.canvasWidth,this._settings.canvasHeight, this._buffer);
+      this._paint.paintBuffer(this._buffer);
     }
     
   } 

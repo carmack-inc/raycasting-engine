@@ -1,7 +1,7 @@
-import { GameState } from "../gameModal";
+import { GameState } from "../logic/gameModal";
 import { RayInfo } from "../raycast";
-import { Settings } from "../settings";
-import { Vec2 } from "../vector";
+import { Settings } from "../configuration/settings";
+import { Vec2 } from "../utils/vector";
 
 export abstract class Renderable {
   private _settings: Settings;
@@ -24,13 +24,5 @@ export abstract class Renderable {
     buffer[index + 1] = values.g;
     buffer[index + 2] = values.b;
     buffer[index + 3] = values.a;
-  }
-
-  isCellOutOfBounds(cell: Vec2) {
-    if (cell.y > this._settings.map.length - 1) return true;
-    if (cell.x > this._settings.map[0].length - 1) return true;
-    if (cell.y < 0) return true;
-    if (cell.x < 0) return true;
-    return false;
   }
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Player } from "./player";
-import { GenerateSettingsType, Settings } from "./settings";
+import { GenerateSettingsType, Settings } from "../configuration/settings";
 
 function generateSettings(): GenerateSettingsType {
   return {
@@ -58,7 +58,28 @@ describe("Function walk", () => {
 });
 
 describe("Function rotate", () => {
-  it("rotate", () => {
-    // TO DO
+  it("should rotate the player correctly and not change the position", () => {
+    const settings = new Settings(generateSettings());
+    const WALK_SPEED = 0.05;
+    const ROTATE_SPEED = Math.PI;
+    const POSITION = { x: 3, y: 9 };
+    const DIRECTION = { x: 1, y: 0 };
+
+    const player = new Player(
+      {
+        position: { x: POSITION.x, y: POSITION.y },
+        direction: { x: DIRECTION.x, y: DIRECTION.y },
+        rotateSpeed: ROTATE_SPEED,
+        walkSpeed: WALK_SPEED,
+      },
+      settings
+    );
+
+    player.rotate(-settings.canvasWidth)
+    expect(player.direction.x).toBeCloseTo(-1)
+    expect(player.direction.y).toBeCloseTo(0)
+
+    expect(player.position.x).toBeCloseTo(3)
+    expect(player.position.y).toBeCloseTo(9)
   });
 });

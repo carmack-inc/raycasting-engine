@@ -1,9 +1,9 @@
-import { Settings } from "../settings";
+import { Settings } from "../configuration/settings";
 import { Renderable } from "./renderable";
-import { Color, colorsVector } from "../colors";
+import { Color, colorsVector } from "../configuration/colors";
 import { RayInfo } from "../raycast";
-import { GameState } from "../gameModal";
-import { Vec2 } from "../vector";
+import { GameState } from "../logic/gameModal";
+import { Vec2 } from "../utils/vector";
 
 
 export class Wall extends Renderable {
@@ -16,20 +16,22 @@ export class Wall extends Renderable {
     const MAP = this.settings.map;
     for (let x = 0; x < rays.length; x++) {
       const {lineHeight, lineStart, lineEnd } = this.calculateLineHeight(rays[x].perpDist);
-      const textureX = this.getTextureCoordenateX(rays[x], gameState.player.position);
-      const textureStepY = this.getTextureStepY(lineHeight);
+      const textureWidth = 64;
+      const textureHeight = 64;
+      const textureX = this.getTextureCoordenateX(rays[x], gameState.player.position, textureWidth);
+      const textureStepY = this.getTextureStepY(lineHeight, textureHeight);
       let texturePositionY = this.getTexturePositionY(lineHeight, lineStart, textureStepY)
 
-      if(this.isCellOutOfBounds(rays[x].mapHit)){
+      if(this.settings.isCellOutOfBounds(rays[x].mapHit)){
         this.drawOutOfMapColumn(x, lineStart, lineEnd, buffer)
       } else {
         for (let y = lineStart; y <= lineEnd; y++) {
-          const texY = this.getTextureCoordenateY(texturePositionY)
+          const textureY = this.getTextureCoordenateY(texturePositionY, textureHeight)
           texturePositionY += textureStepY
           const mapIndex = MAP[rays[x].mapHit.y][rays[x].mapHit.x];
           let color = colorsVector[mapIndex]
           if(mapIndex <= Color.texture.length){
-            const texIndex = (texY * 64 + textureX) * 4
+            const texIndex = (textureY * 64 + textureX) * 4
             color = [Color.texture[mapIndex - 1][texIndex], Color.texture[mapIndex - 1][texIndex + 1], Color.texture[mapIndex - 1][texIndex + 2]]
           } 
           if(rays[x].side == "x"){
@@ -60,8 +62,8 @@ export class Wall extends Renderable {
     };
   }
 
-  getTextureCoordenateX(ray: RayInfo, playerPosition: Vec2): number{
-    const textureWidth = 64;
+  getTextureCoordenateX(ray: RayInfo, playerPosition: Vec2, textureWidth: number): number{
+    
     const parallelWallDist = this.getParallelWallDist(ray, playerPosition);
     const widthPercent = parallelWallDist - Math.floor(parallelWallDist);
     const textureCoordenateX = Math.floor(widthPercent * textureWidth);
@@ -73,8 +75,7 @@ export class Wall extends Renderable {
     return textureCoordenateX;
   }
 
-  getTextureCoordenateY(texturePositionY: number): number{
-    const textureHeight = 64;
+  getTextureCoordenateY(texturePositionY: number, textureHeight: number): number{
     const textureY = Math.floor(texturePositionY);
     return textureY > textureHeight - 1 ? textureHeight - 1 : textureY
   }
@@ -85,9 +86,8 @@ export class Wall extends Renderable {
         ray.rayDirection.x * ray.perpDist + playerPosition.x;
   }
 
-  getTextureStepY(lineHeight: number){
-    const textureWidth = 64;
-    return textureWidth / lineHeight
+  getTextureStepY(lineHeight: number, textureHeight: number): number{
+    return textureHeight / lineHeight
   }
 
   getTexturePositionY(lineHeight: number, lineStart: number, textureYStep: number): number{
@@ -99,7 +99,7 @@ export class Wall extends Renderable {
       const color = colorsVector[0]
       this.setPixelBuffer(
         buffer,
-        { x:column, y },
+        { x: column, y },
         { r: color[0], g: color[1], b: color[2], a: 255 }
       );
     }

@@ -1,6 +1,39 @@
 import { describe, expect, it } from "vitest";
 import { ActionsFlags, InputManager } from "./inputManager";
 
+describe("Functions createValidKeys", () => {
+  it("should create a object with valid keys as keys and action flags as values", () => {
+    const UP_KEY = "W";
+    const DOWN_KEY = "S";
+    const LEFT_KEY = "A";
+    const RIGHT_KEY = "D";
+    const input = new InputManager({ UP_KEY, DOWN_KEY, LEFT_KEY, RIGHT_KEY });
+    const validKeys = input.createValidKeys({ UP_KEY, DOWN_KEY, LEFT_KEY, RIGHT_KEY });
+    expect(validKeys).toEqual({
+      W: "UP_KEY",
+      S: "DOWN_KEY",
+      A: "LEFT_KEY",
+      D: "RIGHT_KEY",
+    });
+  });
+
+  it("should create a object with valid keys in uppercase as keys and action flags as values", () => {
+    const UP_KEY = "w";
+    const DOWN_KEY = "s";
+    const LEFT_KEY = "a";
+    const RIGHT_KEY = "d";
+    const input = new InputManager({ UP_KEY, DOWN_KEY, LEFT_KEY, RIGHT_KEY });
+    const validKeys = input.createValidKeys({ UP_KEY, DOWN_KEY, LEFT_KEY, RIGHT_KEY });
+    expect(validKeys).toEqual({
+      W: "UP_KEY",
+      S: "DOWN_KEY",
+      A: "LEFT_KEY",
+      D: "RIGHT_KEY",
+    });
+  });
+});
+
+
 describe("Function registerKeyboardInput", () => {
   it("should register the correct action based on key", () => {
     const UP_KEY = "W";
